@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<translations>
+  <common>
+    <home>Home</home>
+    <portfolio>Portfolio</portfolio>
+    <loading>Loading...</loading>
+    <error>Error</error>
+    <close>Close</close>
+    <untitled>Untitled</untitled>
+    <noDescription>No description available</noDescription>
+  </common>
+  
+  <home>
+    <title>MEGATREX4 - Streamer & Content Creator</title>
+    <description>Founder of the amateur translation community "СУМ Майнкрафт", creating entertaining content on YouTube and Twitch</description>
+    <aboutText>
+      <p>Founder of the amateur translation community</p>
+      <span>"СУМ Майнкрафт"</span>
+      <p>, creating entertaining content on </p>
+      <span>YouTube</span>
+      <p> and </p>
+      <span>Twitch</span>
+    </aboutText>
+    <latestVideo>Latest Video</latestVideo>
+    <watchLive>Watch Live</watchLive>
+    <roles>
+      <streamer>Streamer</streamer>
+      <translator>Translator</translator>
+      <blogger>Blogger</blogger>
+      <artist>3D Artist</artist>
+      <modder>Modder</modder>
+    </roles>
+  </home>
+  
+  <portfolio>
+    <title>MEGATREX4 Portfolio</title>
+    <description>My works and projects</description>
+    <categories>
+      <threeModels>3D Models</threeModels>
+      <mods>Mods</mods>
+      <projects>Projects</projects>
+      <resourcepack>Resource Packs</resourcepack>
+      <modpack>Modpacks</modpack>
+      <article>Articles</article>
+      <thumbnail>Thumbnails</thumbnail>
+    </categories>
+    <viewProject>View Project</viewProject>
+    <download>Download</download>
+  </portfolio>
+  
+  <social>
+    <youtube>YouTube</youtube>
+    <twitch>Twitch</twitch>
+    <discord>Discord</discord>
+    <twitter>Twitter</twitter>
+    <telegram>Telegram</telegram>
+    <tiktok>TikTok</tiktok>
+    <mastodon>Mastodon</mastodon>
+    <instagram>Instagram</instagram>
+    <bluesky>BlueSky</bluesky>
+    <spotify>Spotify</spotify>
+    <mono>Monobank</mono>
+    <donatello>Donatello</donatello>
+    <sumtrans>СУМ Translation</sumtrans>
+  </social>
+  
+  <footer>
+    <copyright>© 2024 MEGATREX4. All rights reserved.</copyright>
+    <madeWith>Made with ❤️ in Ukraine</madeWith>
+  </footer>
+</translations>

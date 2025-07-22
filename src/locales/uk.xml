@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<translations>
+  <common>
+    <home>Головна</home>
+    <portfolio>Портфоліо</portfolio>
+    <loading>Завантаження...</loading>
+    <error>Помилка</error>
+    <close>Закрити</close>
+    <untitled>Без назви</untitled>
+    <noDescription>Немає опису</noDescription>
+  </common>
+  
+  <home>
+    <title>MEGATREX4 - Стрімер і контент-мейкер</title>
+    <description>Засновник аматорської перекладацької спільноти "СУМ Майнкрафт", роблю розважальний контент на YouTube та Twitch</description>
+    <aboutText>
+      <p>Засновник аматорської перекладацької спільноти</p>
+      <span>"СУМ Майнкрафт"</span>
+      <p>, роблю розважальний контент на </p>
+      <span>YouTube</span>
+      <p> та </p>
+      <span>Twitch</span>
+    </aboutText>
+    <latestVideo>Останнє відео</latestVideo>
+    <watchLive>Дивитися наживо</watchLive>
+    <roles>
+      <streamer>Стрімер</streamer>
+      <translator>Перекладач</translator>
+      <blogger>Блогер</blogger>
+      <artist>3D Художник</artist>
+      <modder>Моддер</modder>
+    </roles>
+  </home>
+  
+  <portfolio>
+    <title>Портфоліо MEGATREX4</title>
+    <description>Мої роботи та проєкти</description>
+    <categories>
+      <threeModels>3D Моделі</threeModels>
+      <mods>Моди</mods>
+      <projects>Проєкти</projects>
+      <resourcepack>Ресурс паки</resourcepack>
+      <modpack>Збірки модів</modpack>
+      <article>Статті</article>
+      <thumbnail>Обкладинки</thumbnail>
+    </categories>
+    <viewProject>Переглянути проєкт</viewProject>
+    <download>Завантажити</download>
+  </portfolio>
+  
+  <social>
+    <youtube>YouTube</youtube>
+    <twitch>Twitch</twitch>
+    <discord>Discord</discord>
+    <twitter>Twitter</twitter>
+    <telegram>Telegram</telegram>
+    <tiktok>TikTok</tiktok>
+    <mastodon>Mastodon</mastodon>
+    <instagram>Instagram</instagram>
+    <bluesky>BlueSky</bluesky>
+    <spotify>Spotify</spotify>
+    <mono>Monobank</mono>
+    <donatello>Donatello</donatello>
+    <sumtrans>СУМ Переклад</sumtrans>
+  </social>
+  
+  <footer>
+    <copyright>© 2024 MEGATREX4. Всі права захищені.</copyright>
+    <madeWith>Зроблено з ❤️ в Україні</madeWith>
+  </footer>
+</translations>
