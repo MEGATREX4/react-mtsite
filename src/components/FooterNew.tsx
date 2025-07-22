@@ -11,7 +11,7 @@ export const Footer: React.FC = () => {
     { platform: 'youtube', url: 'https://youtube.com/@MEGATREX4', icon: 'fab fa-youtube', color: 'hover:text-red-500' },
     { platform: 'twitch', url: 'https://twitch.tv/megatrex4', icon: 'fab fa-twitch', color: 'hover:text-purple-500' },
     { platform: 'discord', url: 'https://discord.gg/summinecraft', icon: 'fab fa-discord', color: 'hover:text-indigo-500' },
-    { platform: 'twitter', url: 'https://x.com/megatrex4', icon: 'fab fa-x-twitter', color: 'hover:text-gray-300' },
+    { platform: 'twitter', url: 'https://x.com/megatrex4', icon: 'fab fa-twitter', color: 'hover:text-gray-300' },
     { platform: 'telegram', url: 'https://t.me/megatrex4_news', icon: 'fab fa-telegram', color: 'hover:text-blue-400' },
     { platform: 'instagram', url: 'https://instagram.com/megatrex4', icon: 'fab fa-instagram', color: 'hover:text-pink-500' },
   ];

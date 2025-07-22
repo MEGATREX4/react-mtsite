@@ -62,7 +62,7 @@ export const Home: React.FC = () => {
     { 
       platform: 'twitter', 
       url: 'https://x.com/megatrex4', 
-      icon: 'fab fa-x-twitter', 
+      icon: 'fab fa-twitter', 
       color: 'bg-gray-800 hover:bg-gray-900',
       label: translations.social?.twitter || 'Twitter'
     },
