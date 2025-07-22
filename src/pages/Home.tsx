@@ -108,7 +108,7 @@ export const Home: React.FC = () => {
       platform: 'mono',
       url: 'https://send.monobank.ua/jar/2jMrnMPWGS',
       icon: 'fas fa-credit-card',
-      color: 'bg-black hover:bg-gray-800',
+      color: 'bg-black hover:bg-gray-500',
       label: translations.social.mono,
       isPrimary: true
     },
@@ -116,7 +116,7 @@ export const Home: React.FC = () => {
       platform: 'donatello',
       url: 'https://donatello.to/megatrex4',
       icon: 'fas fa-heart',
-      color: 'bg-red-500 hover:bg-red-600',
+      color: 'bg-red-500 hover:bg-red-400',
       label: translations.social.donatello,
       isPrimary: true
     },
@@ -256,13 +256,13 @@ export const Home: React.FC = () => {
             <SocialButtons links={socialLinks} variant="square" />
           </div>
 
-          {/* Support Section */}
-          <div className="mt-8 p-6 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 text-center mb-4">
+            {/* Support Section */}
+            <div className="mt-8 p-6 bg-gradient-to-br from-yellow-50 via-white/80 to-primary-100/80 dark:from-gray-900 dark:via-gray-800/80 dark:to-primary-900/40 backdrop-blur-md rounded-2xl border-2 border-primary-400 dark:border-primary-600 shadow-xl ring-2 ring-primary-200/40 dark:ring-primary-700/40">
+            <h3 className="text-lg font-bold text-primary-700 dark:text-primary-200 text-center mb-4 drop-shadow">
               {language === 'uk' ? 'Підтримати проєкт' : 'Support the project'}
             </h3>
             <SocialButtons links={supportLinks} variant="horizontal" />
-          </div>
+            </div>
         </div>
       </div>
     </div>
