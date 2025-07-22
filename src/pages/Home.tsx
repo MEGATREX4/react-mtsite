@@ -164,7 +164,6 @@ export const Home: React.FC = () => {
                 className="w-32 h-32 rounded-full mx-auto shadow-2xl border-4 border-white dark:border-gray-700 relative z-10"
                 loading="eager"
               />
-              <div className="absolute -top-1 -right-1 w-8 h-8 bg-green-500 border-4 border-white dark:border-gray-700 rounded-full z-20"></div>
             </div>
 
             {/* Enhanced Title */}
