@@ -45,7 +45,7 @@ export const Home: React.FC = () => {
     },
     { 
       platform: 'discord', 
-      url: 'https://discord.gg/summinecraft', 
+      url: 'https://discord.gg/Y9yfRxjAHB', 
       icon: 'fab fa-discord', 
       color: 'bg-indigo-600 hover:bg-indigo-700',
       label: translations.social?.discord || 'Discord',

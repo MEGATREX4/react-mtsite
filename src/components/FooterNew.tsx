@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
   const socialLinks = [
     { platform: 'youtube', url: 'https://youtube.com/@MEGATREX4', icon: 'fab fa-youtube', color: 'hover:text-red-500' },
     { platform: 'twitch', url: 'https://twitch.tv/megatrex4', icon: 'fab fa-twitch', color: 'hover:text-purple-500' },
-    { platform: 'discord', url: 'https://discord.gg/summinecraft', icon: 'fab fa-discord', color: 'hover:text-indigo-500' },
+    { platform: 'discord', url: 'https://discord.gg/Y9yfRxjAHB', icon: 'fab fa-discord', color: 'hover:text-indigo-500' },
     { platform: 'twitter', url: 'https://x.com/megatrex4', icon: 'fab fa-twitter', color: 'hover:text-gray-300' },
     { platform: 'telegram', url: 'https://t.me/megatrex4_news', icon: 'fab fa-telegram', color: 'hover:text-blue-400' },
     { platform: 'instagram', url: 'https://instagram.com/megatrex4', icon: 'fab fa-instagram', color: 'hover:text-pink-500' },
@@ -117,7 +117,7 @@ export const Footer: React.FC = () => {
             </h4>
             <div className="space-y-3">
               <motion.a
-                href="https://summinecraft.github.io/"
+                href="https://sumtranslate.netlify.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 text-gray-300 hover:text-primary-300 transition-colors duration-300"
