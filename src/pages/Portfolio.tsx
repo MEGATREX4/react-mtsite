@@ -80,7 +80,7 @@ export const Portfolio: React.FC = () => {
       description: language === 'uk' 
         ? 'Повнофункціональний інтернет-магазин мерчу для українського YouTuber\'а з сучасним дизайном та зручною навігацією'
         : 'Full-featured merchandise store for Ukrainian YouTuber with modern design and user-friendly navigation',
-      image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop',
+      image: 'https://ibb.co/dJ4Dc8j9',
       url: 'https://deploy-preview-1--kork0za-merch.netlify.app/',
       tags: ['E-commerce', 'React', 'TypeScript', 'Tailwind CSS', 'Responsive'],
       type: 'website' as const,
@@ -91,7 +91,7 @@ export const Portfolio: React.FC = () => {
       description: language === 'uk'
         ? 'Веб-додаток для збереження та обміну смішними цитатами та "пастами" з інтуїтивним інтерфейсом'
         : 'Web application for saving and sharing funny quotes and "pastas" with intuitive interface',
-      image: 'https://images.unsplash.com/photo-1515378791036-0648a814c963?w=800&h=600&fit=crop',
+      image: 'https://ibb.co/3XG6kNY',
       url: 'https://ukrpaste.netlify.app/',
       tags: ['Web App', 'JavaScript', 'CSS3', 'Local Storage', 'PWA'],
       type: 'webapp' as const,
