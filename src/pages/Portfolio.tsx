@@ -151,22 +151,12 @@ export const Portfolio: React.FC = () => {
       {/* Header Section */}
       <section className="py-24 bg-gradient-to-br from-primary-50 via-white to-primary-100 dark:from-dark-900 dark:via-dark-800 dark:to-dark-900">
         <div className="container mx-auto px-4 text-center">
-          <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-primary-700 to-gray-900 dark:from-gray-100 dark:via-primary-400 dark:to-gray-100 bg-clip-text text-transparent"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-          >
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-primary-700 to-gray-900 dark:from-gray-100 dark:via-primary-400 dark:to-gray-100 bg-clip-text text-transparent">
             {translations.portfolio?.title || (language === 'uk' ? 'Портфоліо' : 'Portfolio')}
-          </motion.h1>
-          <motion.p
-            className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
+          </h1>
+          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
             {translations.portfolio?.description || (language === 'uk' ? 'Колекція моїх робіт та проектів' : 'A collection of my work and projects')}
-          </motion.p>
+          </p>
         </div>
       </section>
 
@@ -237,23 +227,20 @@ export const Portfolio: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-3">
             {categories.map((category) => (
-              <motion.button
+              <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 will-change-transform ${
+                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                   activeCategory === category
-                    ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/25 scale-105'
-                    : 'bg-gray-100/80 dark:bg-dark-700/80 backdrop-blur-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-600 hover:scale-105 hover:shadow-md'
+                    ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/25'
+                    : 'bg-gray-100/80 dark:bg-dark-700/80 backdrop-blur-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-600 hover:shadow-md'
                 }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ duration: 0.2 }}
               >
                 {category === 'all' 
                   ? (language === 'uk' ? 'Всі' : 'All')
                   : getCategoryDisplayName(category, language)
                 }
-              </motion.button>
+              </button>
             ))}
           </div>
         </div>
