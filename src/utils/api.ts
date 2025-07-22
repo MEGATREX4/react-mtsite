@@ -1,8 +1,8 @@
 import type { GalleryImage, YouTubeVideo } from '../types';
 
 // YouTube API configuration
-const YOUTUBE_API_KEY = 'AIzaSyCDUEqA0BUCGtsPEQyrDo64UrgvI0RxGV8';
-const YOUTUBE_CHANNEL_ID = 'UC2b7FlXxNLjcLNv407at2Ig';
+const YOUTUBE_API_KEY = '#';
+const YOUTUBE_CHANNEL_ID = '#';
 const CACHE_DURATION = 3600000; // 1 hour in milliseconds
 
 export const fetchLatestVideo = async (): Promise<YouTubeVideo | null> => {

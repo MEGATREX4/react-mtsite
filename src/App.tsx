@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
 import { AppProvider } from './components/AppProvider';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
@@ -23,19 +22,17 @@ const AppContent: React.FC = () => {
       <div className="min-h-screen bg-white dark:bg-dark-900 text-gray-900 dark:text-gray-100">
         <Header />
         <main className="min-h-screen">
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/portfolio" element={<Portfolio />} />
-              
-              {/* Redirect old/alternative routes */}
-              <Route path="/home" element={<Navigate to="/" replace />} />
-              <Route path="/about" element={<Navigate to="/" replace />} />
-              
-              {/* 404 Not Found - This should be the last route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AnimatePresence>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            
+            {/* Redirect old/alternative routes */}
+            <Route path="/home" element={<Navigate to="/" replace />} />
+            <Route path="/about" element={<Navigate to="/" replace />} />
+            
+            {/* 404 Not Found - This should be the last route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </main>
         <Footer />
       </div>

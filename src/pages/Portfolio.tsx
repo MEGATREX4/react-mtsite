@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useAppContext } from '../components/AppProvider';
@@ -15,6 +15,32 @@ export const Portfolio: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'date' | 'title' | 'category'>('date');
+
+  // Move all useCallback hooks right after state declarations
+  const openModal = useCallback((image: GalleryImage) => {
+    setSelectedImage(image);
+    document.body.style.overflow = 'hidden';
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setSelectedImage(null);
+    document.body.style.overflow = 'auto';
+  }, []);
+
+  const navigateImage = useCallback((direction: 'prev' | 'next') => {
+    if (!selectedImage) return;
+    
+    const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
+    let newIndex: number;
+    
+    if (direction === 'prev') {
+      newIndex = currentIndex > 0 ? currentIndex - 1 : filteredImages.length - 1;
+    } else {
+      newIndex = currentIndex < filteredImages.length - 1 ? currentIndex + 1 : 0;
+    }
+    
+    setSelectedImage(filteredImages[newIndex]);
+  }, [selectedImage, filteredImages]);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -69,6 +95,28 @@ export const Portfolio: React.FC = () => {
     setFilteredImages(filtered);
   }, [activeCategory, images, searchQuery, sortBy]);
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedImage) return;
+      
+      switch (e.key) {
+        case 'Escape':
+          closeModal();
+          break;
+        case 'ArrowLeft':
+          navigateImage('prev');
+          break;
+        case 'ArrowRight':
+          navigateImage('next');
+          break;
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedImage, closeModal, navigateImage]);
+
   if (!translations) return null;
 
   const categories = ['all', ...Array.from(new Set(images.map(img => img.category)))];
@@ -98,53 +146,6 @@ export const Portfolio: React.FC = () => {
       featured: true
     }
   ];
-
-  const openModal = (image: GalleryImage) => {
-    setSelectedImage(image);
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeModal = () => {
-    setSelectedImage(null);
-    document.body.style.overflow = 'auto';
-  };
-
-  const navigateImage = (direction: 'prev' | 'next') => {
-    if (!selectedImage) return;
-    
-    const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
-    let newIndex: number;
-    
-    if (direction === 'prev') {
-      newIndex = currentIndex > 0 ? currentIndex - 1 : filteredImages.length - 1;
-    } else {
-      newIndex = currentIndex < filteredImages.length - 1 ? currentIndex + 1 : 0;
-    }
-    
-    setSelectedImage(filteredImages[newIndex]);
-  };
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!selectedImage) return;
-      
-      switch (e.key) {
-        case 'Escape':
-          closeModal();
-          break;
-        case 'ArrowLeft':
-          navigateImage('prev');
-          break;
-        case 'ArrowRight':
-          navigateImage('next');
-          break;
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedImage, filteredImages]);
 
   return (
     <div className="min-h-screen pt-20">
