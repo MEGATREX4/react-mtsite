@@ -106,7 +106,7 @@ export const Home: React.FC = () => {
   const supportLinks = [
     {
       platform: 'mono',
-      url: 'https://send.monobank.ua/jar/2jMrnMPWGS',
+      url: 'https://send.monobank.ua/jar/6WuAWRvdGN',
       icon: 'fas fa-credit-card',
       color: 'bg-black hover:bg-gray-500',
       label: translations.social.mono,
@@ -114,7 +114,7 @@ export const Home: React.FC = () => {
     },
     {
       platform: 'donatello',
-      url: 'https://donatello.to/megatrex4',
+      url: 'https://donatello.to/MEGATREX4',
       icon: 'fas fa-heart',
       color: 'bg-red-500 hover:bg-red-400',
       label: translations.social.donatello,

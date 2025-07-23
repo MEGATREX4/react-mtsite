@@ -152,7 +152,7 @@ export const Footer: React.FC = () => {
             </h4>
             <div className="flex justify-center space-x-4">
               <motion.a
-                href="https://send.monobank.ua/jar/2jMrnMPWGS"
+                href="https://send.monobank.ua/jar/6WuAWRvdGN"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 rounded-lg transition-all duration-300 flex items-center space-x-2"
@@ -163,7 +163,7 @@ export const Footer: React.FC = () => {
                 <span>{translations.social.mono}</span>
               </motion.a>
               <motion.a
-                href="https://donatello.to/megatrex4"
+                href="https://donatello.to/MEGATREX4"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 rounded-lg transition-all duration-300 flex items-center space-x-2"
