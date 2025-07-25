@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-interface ProjectBannerProps {
+export interface ProjectBannerProps {
   title: string;
   description: string;
   image: string;

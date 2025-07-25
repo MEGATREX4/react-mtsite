@@ -5,6 +5,7 @@ import { useAppContext } from '../components/AppProvider';
 import { FeaturedProjects } from '../components/ProjectBanner';
 import { loadGalleryImages, getCategoryDisplayName } from '../utils/api';
 import type { GalleryImage } from '../types';
+import type { ProjectBannerProps } from '../components/ProjectBanner';
 
 export const Portfolio: React.FC = () => {
   const { translations, language } = useAppContext();
@@ -137,7 +138,7 @@ export const Portfolio: React.FC = () => {
   const categories = ['all', ...Array.from(new Set(images.map(img => img.category)))];
 
   // Featured projects data
-  const featuredProjects = [
+  const featuredProjects: ProjectBannerProps[] = [
     {
       title: language === 'uk' ? 'Kork0za Merch Store' : 'Kork0za Merch Store',
       description: language === 'uk' 
@@ -179,7 +180,7 @@ export const Portfolio: React.FC = () => {
       image: 'https://cdn.modrinth.com/data/59Xtpez1/images/03ce295e730cc2d1e33be89b90151dee6cd0bb07.png',
       url: 'http://m4sub.click/',
       tags: ['Servers', 'Community', 'Support', 'Ukrainian'],
-      type: 'other', // Changed from 'project' to 'other'
+      type: 'other',
       featured: true
     },
     {
