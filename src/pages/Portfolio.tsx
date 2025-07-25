@@ -47,6 +47,21 @@ export const Portfolio: React.FC = () => {
       setIsLoading(true);
       try {
         const galleryImages = await loadGalleryImages();
+
+        // Sort images immediately after loading
+        galleryImages.sort((a, b) => {
+          switch (sortBy) {
+            case 'title':
+              return (a.title || '').localeCompare(b.title || '');
+            case 'category':
+              return (a.category || '').localeCompare(b.category || '');
+            case 'date':
+            default:
+              // Assuming newer images have higher IDs
+              return parseInt(b.id || '0') - parseInt(a.id || '0');
+          }
+        });
+
         setImages(galleryImages);
         setFilteredImages(galleryImages);
       } catch (error) {
@@ -57,7 +72,7 @@ export const Portfolio: React.FC = () => {
     };
 
     loadImages();
-  }, []);
+  }, [sortBy]);
 
   useEffect(() => {
     let filtered = images;
