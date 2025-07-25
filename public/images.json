@@ -301,6 +301,29 @@
       "downloadUrl": "#",
       "projectUrl": "https://patsiukui.netlify.app/",
       "featured": true
+    },
+    {
+      "id": "27",
+      "url": "https://cdn.modrinth.com/data/Peew73yt/58231cf55e666344fec69ffc5930acc70c7f7ce2_96.webp",
+      "title": "MT Random Block Placement",
+      "description": "MT Random Block Placement - Інструмент для випадкового розміщення блоків у Minecraft",
+      "descriptionEn": "MT Random Block Placement - Tool for random block placement in Minecraft",
+      "category": "projects",
+      "tags": ["minecraft", "tool", "random", "placement"],
+      "downloadUrl": "#",
+      "projectUrl": "https://modrinth.com/mod/random-block-placement",
+      "featured": true
+    },
+    {
+      "id": "28",
+      "url": "",
+      "title": "MT Site Redesign",
+      "description": "Переробка сайту MT з новим дизайном та функціоналом",
+      "descriptionEn": "Redesign of the MT site with a new design and functionality",
+      "category": "website",
+      "tags": ["website", "redesign", "mt", "project"],
+      "downloadUrl": "#",
+      "projectUrl": "#"
     }
   ]
 }
