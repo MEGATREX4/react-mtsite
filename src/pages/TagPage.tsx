@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AVAILABLE_TAGS } from '../constants/tags';
+import { NotFound } from './NotFound';
 import { motion } from 'framer-motion';
 
 const TagPage: React.FC = () => {
@@ -15,8 +16,7 @@ const TagPage: React.FC = () => {
       setIsRedirecting(true);
       setTimeout(() => window.location.href = tagData.url, 2000);
     } else if (tag) {
-      setIsRedirecting(true);
-      setTimeout(() => navigate('/404', { replace: true }), 2000);
+      navigate('/404', { replace: true }); // Redirect to NotFound page immediately
     }
   }, [tag, tagData, navigate]);
 
@@ -61,12 +61,7 @@ const TagPage: React.FC = () => {
     );
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center text-xl">
-      <h1>Tag: {tag}</h1>
-      <p>Content for tag "{tag}" will be displayed here.</p>
-    </div>
-  );
+  return <NotFound />; // Render NotFound page if tag is invalid
 };
 
 export default TagPage;
