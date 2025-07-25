@@ -9,7 +9,7 @@ const TagPage: React.FC = () => {
   const navigate = useNavigate();
   const [isRedirecting, setIsRedirecting] = useState(false);
 
-  const tagData = AVAILABLE_TAGS.find(t => t.name === tag);
+  const tagData = AVAILABLE_TAGS.find(t => t.name.toLowerCase() === tag?.trim().toLowerCase());
 
   useEffect(() => {
     if (tagData) {
