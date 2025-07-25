@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { AppProvider, useAppContext } from './components/AppProvider';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
@@ -21,25 +21,18 @@ const PCLazy = React.lazy(() => import('./pages/PC'));
 
 const AppContent: React.FC = () => {
   const { changeLanguage } = useAppContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const path = window.location.pathname;
     if (path.startsWith('/en')) {
       changeLanguage('en');
-      if (path !== '/en') {
-        window.history.replaceState(null, '', path.replace('/en', ''));
-      } else {
-        window.history.replaceState(null, '', '/');
-      }
+      navigate(path.replace('/en', '') || '/', { replace: true });
     } else if (path.startsWith('/uk')) {
       changeLanguage('uk');
-      if (path !== '/uk') {
-        window.history.replaceState(null, '', path.replace('/uk', ''));
-      } else {
-        window.history.replaceState(null, '', '/');
-      }
+      navigate(path.replace('/uk', '') || '/', { replace: true });
     }
-  }, [changeLanguage]);
+  }, [changeLanguage, navigate]);
 
   return (
     <Router>
