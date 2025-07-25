@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider } from './components/AppProvider';
 import { Header } from './components/Header';
@@ -7,6 +6,7 @@ import { Home } from './pages/Home';
 import { Portfolio } from './pages/Portfolio';
 import { NotFound } from './pages/NotFound';
 import './index.css';
+import React, { Suspense } from 'react';
 
 function App() {
   return (
@@ -15,6 +15,8 @@ function App() {
     </AppProvider>
   );
 }
+
+const PCLazy = React.lazy(() => import('./pages/PC'));
 
 const AppContent: React.FC = () => {
   return (
@@ -25,11 +27,14 @@ const AppContent: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/portfolio" element={<Portfolio />} />
-            
+            <Route path="/pc" element={
+              <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-xl">Loading...</div>}>
+                <PCLazy />
+              </Suspense>
+            } />
             {/* Redirect old/alternative routes */}
             <Route path="/home" element={<Navigate to="/" replace />} />
             <Route path="/about" element={<Navigate to="/" replace />} />
-            
             {/* 404 Not Found - This should be the last route */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -17,6 +17,7 @@ export const Header: React.FC = () => {
   const navigationItems = [
     { path: '/', label: translations.common.home, icon: 'fas fa-home' },
     { path: '/portfolio', label: translations.common.portfolio, icon: 'fas fa-briefcase' },
+    { path: '/pc', label: language === 'uk' ? 'ПК' : 'PC', icon: 'fas fa-desktop' },
   ];
 
   const closeMobileMenu = () => {
@@ -25,8 +26,9 @@ export const Header: React.FC = () => {
 
   return (
     <motion.header
+      // 1. Змінено умову для фону: додано `|| isMobileMenuOpen`
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+        (isScrolled || isMobileMenuOpen)
           ? 'bg-white/90 dark:bg-dark-900/90 backdrop-blur-md shadow-lg'
           : 'bg-transparent'
       }`}
@@ -119,10 +121,11 @@ export const Header: React.FC = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden mt-4 border-t border-gray-200 dark:border-dark-700 pt-4"
+              transition={{ duration: 0.3 }}
+              // 2. Спрощено класи, бо дублюючі контролери видалені
+              className="md:hidden mt-4 border-t border-gray-200 dark:border-dark-700"
             >
-              <div className="flex flex-col space-y-2">
+              <div className="flex flex-col space-y-2 pt-4">
                 {navigationItems.map((item) => (
                   <Link
                     key={item.path}
@@ -138,42 +141,6 @@ export const Header: React.FC = () => {
                     <span>{item.label}</span>
                   </Link>
                 ))}
-                
-                {/* Mobile Language and Theme Controls */}
-                <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-dark-700">
-                  {/* Language Switcher */}
-                  <div className="flex items-center bg-gray-100 dark:bg-dark-700 rounded-lg overflow-hidden">
-                    <button
-                      onClick={() => changeLanguage('uk')}
-                      className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-                        language === 'uk'
-                          ? 'bg-primary-600 text-white'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-600'
-                      }`}
-                    >
-                      UK
-                    </button>
-                    <button
-                      onClick={() => changeLanguage('en')}
-                      className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-                        language === 'en'
-                          ? 'bg-primary-600 text-white'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-600'
-                      }`}
-                    >
-                      EN
-                    </button>
-                  </div>
-
-                  {/* Theme Toggle */}
-                  <button
-                    onClick={toggleTheme}
-                    className="p-2 rounded-lg bg-gray-100 dark:bg-dark-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors duration-200"
-                    aria-label="Toggle theme"
-                  >
-                    <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'} />
-                  </button>
-                </div>
               </div>
             </motion.div>
           )}

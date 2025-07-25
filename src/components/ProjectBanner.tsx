@@ -52,8 +52,7 @@ export const ProjectBanner: React.FC<ProjectBannerProps> = ({
       transition={{ duration: 0.6 }}
       whileHover={{ y: -5 }}
     >
-          {/* Featured Badge */}
-      {featured && (
+      {featured && ( /* Featured Badge */
         <div className="absolute top-4 left-4 z-10">
           <span className="px-3 py-1 bg-primary-600 text-white text-xs font-semibold rounded-full">
             {language === 'uk' ? 'Рекомендовано' : 'Featured'}
