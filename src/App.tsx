@@ -7,6 +7,7 @@ import { Portfolio } from './pages/Portfolio';
 import { NotFound } from './pages/NotFound';
 import './index.css';
 import React, { Suspense } from 'react';
+import TagPage from './pages/TagPage';
 
 function App() {
   return (
@@ -32,6 +33,8 @@ const AppContent: React.FC = () => {
                 <PCLazy />
               </Suspense>
             } />
+            <Route path="/tag/:tag" element={<TagPage />} />
+            <Route path="/:tag" element={<TagPage />} />
             {/* Redirect old/alternative routes */}
             <Route path="/home" element={<Navigate to="/" replace />} />
             <Route path="/about" element={<Navigate to="/" replace />} />

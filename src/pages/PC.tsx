@@ -71,7 +71,7 @@ export const PC: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen pt-20 bg-gradient-to-br from-primary-50 via-white to-primary-100 dark:from-dark-900 dark:via-dark-800 dark:to-dark-900">
+    <div className="min-h-screen bg-gradient-to-br from-white via-primary-50/30 to-primary-100/50 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/20 relative overflow-hidden">
       <div className="container mx-auto px-4 py-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-10 text-primary-600 dark:text-primary-400 text-center">
           {language === 'uk' ? 'Мій ПК та Обладнання' : 'My PC & Gear'}
