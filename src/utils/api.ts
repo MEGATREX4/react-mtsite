@@ -86,7 +86,9 @@ export const getCategoryDisplayName = (category: string, language: string): stri
       'resourcepack': 'Ресурс паки',
       'modpack': 'Збірки модів',
       'article': 'Статті',
-      'thumbnail': 'Обкладинки'
+      'thumbnail': 'Обкладинки',
+      'website': 'Вебсайти',
+      'webapp': 'Веб додатки',
     },
     en: {
       '3dmodels': '3D Models',
@@ -95,7 +97,9 @@ export const getCategoryDisplayName = (category: string, language: string): stri
       'resourcepack': 'Resource Packs',
       'modpack': 'Modpacks',
       'article': 'Articles',
-      'thumbnail': 'Thumbnails'
+      'thumbnail': 'Thumbnails',
+      'website': 'Websites',
+      'webapp': 'Web Apps',
     }
   };
 

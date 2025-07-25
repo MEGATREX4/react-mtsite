@@ -131,7 +131,7 @@ export const Portfolio: React.FC = () => {
       image: 'https://github.com/MEGATREX4/react-mtsite/blob/main/public/img/kork0za-merch.png?raw=true',
       url: 'https://deploy-preview-1--kork0za-merch.netlify.app/',
       tags: ['E-commerce', 'React', 'TypeScript', 'Tailwind CSS', 'Responsive'],
-      type: 'website' as const,
+      type: 'website',
       featured: true
     },
     {
@@ -142,7 +142,40 @@ export const Portfolio: React.FC = () => {
       image: 'https://github.com/MEGATREX4/react-mtsite/blob/main/public/img/ukrpaste.png?raw=true',
       url: 'https://ukrpaste.netlify.app/',
       tags: ['Web App', 'JavaScript', 'CSS3', 'Local Storage', 'PWA'],
-      type: 'webapp' as const,
+      type: 'webapp',
+      featured: true
+    },
+    {
+      title: language === 'uk' ? 'MT Ukrainian Delight' : 'MT Ukrainian Delight',
+      description: language === 'uk'
+        ? 'Додаток для Farmer\'s Delight з українською національною кухнею'
+        : 'Addon for Farmer\'s Delight with Ukrainian national cuisine',
+      image: 'https://cdn.modrinth.com/data/XvdDyGln/images/27292b07b519e48699396747283b1626c1eab0c6.jpeg',
+      url: 'https://modrinth.com/mod/mt-ukrainian-delight',
+      tags: ['Minecraft', 'Mod', 'Farmer\'s Delight', 'Ukrainian Cuisine'],
+      type: 'webapp',
+      featured: true
+    },
+    {
+      title: language === 'uk' ? 'M4Sub - Українські Сервери' : 'M4Sub - Ukrainian Servers',
+      description: language === 'uk'
+        ? 'Проєкт українських серверів для спільноти з унікальними можливостями та підтримкою'
+        : 'A project of Ukrainian servers for the community with unique features and support',
+      image: 'https://cdn.modrinth.com/data/59Xtpez1/images/03ce295e730cc2d1e33be89b90151dee6cd0bb07.png',
+      url: 'http://m4sub.click/',
+      tags: ['Servers', 'Community', 'Support', 'Ukrainian'],
+      type: 'other', // Changed from 'project' to 'other'
+      featured: true
+    },
+    {
+      title: language === 'uk' ? 'SumTranslate' : 'SumTranslate',
+      description: language === 'uk'
+        ? 'Спільнота перекладу модів Minecraft українською мовою'
+        : 'Community for translating Minecraft mods into Ukrainian',
+      image: 'https://cdn.modrinth.com/data/bbtIbKAp/images/518395cbe322a8bda059bf7ad13fdbe428359bec.png',
+      url: 'https://sumtranslate.netlify.app',
+      tags: ['Minecraft', 'Translation', 'Ukrainian', 'Community'],
+      type: 'webapp',
       featured: true
     }
   ];
@@ -266,7 +299,7 @@ export const Portfolio: React.FC = () => {
             </div>
           ) : (
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 p-2 grid-cols-2"
+              className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 p-2"
               layout
             >
               <AnimatePresence>

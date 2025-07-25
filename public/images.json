@@ -308,7 +308,7 @@
       "title": "MT Random Block Placement",
       "description": "MT Random Block Placement - Інструмент для випадкового розміщення блоків у Minecraft",
       "descriptionEn": "MT Random Block Placement - Tool for random block placement in Minecraft",
-      "category": "projects",
+      "category": "mods",
       "tags": ["minecraft", "tool", "random", "placement"],
       "downloadUrl": "#",
       "projectUrl": "https://modrinth.com/mod/random-block-placement",
@@ -316,7 +316,7 @@
     },
     {
       "id": "28",
-      "url": "",
+      "url": "https://github.com/MEGATREX4/react-mtsite/blob/main/public/img/mt.png?raw=true",
       "title": "MT Site Redesign",
       "description": "Переробка сайту MT з новим дизайном та функціоналом",
       "descriptionEn": "Redesign of the MT site with a new design and functionality",
@@ -324,6 +324,52 @@
       "tags": ["website", "redesign", "mt", "project"],
       "downloadUrl": "#",
       "projectUrl": "#"
+    },
+    {
+      "id": "29",
+      "url": "https://cdn.modrinth.com/data/Wu0xXVoM/3ac2ecc1d66a10fc4cb069e1c14dfa4c3eb125a4_96.webp",
+      "title": "MT Snoring Sound",
+      "description": "MT Snoring Sound - Додає звуки хропіння під час сну гравців та жителів",
+      "descriptionEn": "Adds snoring sounds when players and villagers sleep.",
+      "category": "mods",
+      "tags": ["sound", "mt", "snoring"],
+      "downloadUrl": "https://modrinth.com/mod/snoringsound",
+      "projectUrl": "https://modrinth.com/mod/snoringsound",
+      "featured": true
+    },
+    {
+      "id": "30",
+      "url": "https://cdn.modrinth.com/data/EzA8spEY/2dc854b72e3c5df077ec9bdcaaa3b8839a993c48_96.webp",
+      "title": "MT Inventory Weight",
+      "description": "MT Inventory Weight - Додає вагу інвентарю для гравців",
+      "descriptionEn": "MT Inventory Weight - Adds inventory weight for players",
+      "category": "mods",
+      "tags": ["inventory", "mt", "weight"],
+      "downloadUrl": "https://modrinth.com/mod/inventory-weight",
+      "projectUrl": "https://modrinth.com/mod/inventory-weight",
+      "featured": true
+    },
+    {
+      "id": "31",
+      "url": "https://cdn.modrinth.com/data/zIrI5Bgu/42b8d19e7401e7e66e1c32ab7d6bd03c8110a05a_96.webp",
+      "title": "MT Industrialization de Astra",
+      "description": "Індустріалізація de Astra заповнює прогалину між Modern Industrialization, TechReborn та Ad Astra, забезпечуючи покращену сумісність та вдосконалений ігровий процес для любителів космічних досліджень.",
+      "descriptionEn": "Industrialization de Astra bridges the gap between Modern Industrialization, TechReborn, and Ad Astra, providing enhanced compatibility and refined gameplay for space exploration enthusiasts.",
+      "category": "mods",
+      "tags": ["minecraft", "mod", "industrialization", "space"],
+      "downloadUrl": "https://modrinth.com/mod/mt-industrialization-de-astra",
+      "projectUrl": "https://modrinth.com/mod/mt-industrialization-de-astra"
+    },
+    {
+      "id": "32",
+      "url": "https://cdn.modrinth.com/data/2sVzAvPE/8871cbb4f6f65d9658c0f9a663b302493bbc6549_96.webp",
+      "title": "MT Augmented Reborn",
+      "description": "Augmented Reborn — це додаток до модифікації TechReborn, який покращує футуристичний ігровий процес Minecraft за допомогою перебалансованої механіки броні та потужних інструментів.",
+      "descriptionEn": "Augmented Reborn is an addon for the TechReborn mod, enhancing Minecraft's futuristic gameplay with rebalanced armor mechanics and powerful tools.",
+      "category": "mods",
+      "tags": ["minecraft", "mod", "augmented", "reborn"],
+      "downloadUrl": "https://modrinth.com/mod/augmented-reborn",
+      "projectUrl": "https://modrinth.com/mod/augmented-reborn"
     }
   ]
 }
