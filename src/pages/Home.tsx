@@ -28,35 +28,11 @@ export const Home: React.FC = () => {
 
   const socialLinks = [
     { 
-      platform: 'youtube', 
-      url: 'https://youtube.com/@MEGATREX4', 
-      icon: 'fab fa-youtube', 
-      color: 'bg-red-600 hover:bg-red-700',
-      label: translations.social?.youtube || 'YouTube',
-      isPrimary: true
-    },
-    { 
-      platform: 'twitch', 
-      url: 'https://twitch.tv/megatrex4', 
-      icon: 'fab fa-twitch', 
-      color: 'bg-purple-600 hover:bg-purple-700',
-      label: translations.social?.twitch || 'Twitch',
-      isPrimary: true
-    },
-    { 
       platform: 'discord', 
       url: 'https://discord.gg/Y9yfRxjAHB', 
       icon: 'fab fa-discord', 
       color: 'bg-indigo-600 hover:bg-indigo-700',
       label: translations.social?.discord || 'Discord',
-      isPrimary: true
-    },
-    { 
-      platform: 'portfolio', 
-      url: '/portfolio', 
-      icon: 'fas fa-briefcase', 
-      color: 'bg-primary-600 hover:bg-primary-700',
-      label: translations.common?.portfolio || (language === 'uk' ? 'Портфоліо' : 'Portfolio'),
       isPrimary: true
     },
     { 
@@ -100,6 +76,20 @@ export const Home: React.FC = () => {
       icon: 'fas fa-cloud', 
       color: 'bg-blue-400 hover:bg-blue-500',
       label: translations.social?.bluesky || 'BlueSky'
+    },
+    {
+      platform: 'modrinth',
+      url: 'https://modrinth.com/user/MEGATREX4',
+      icon: 'fas fa-cube',
+      color: 'bg-green-700 hover:bg-green-800',
+      label: translations.social?.modrinth || 'Modrinth'
+    },
+    {
+      platform: 'curseforge',
+      url: 'https://www.curseforge.com/members/megatrex4/projects',
+      icon: 'fas fa-fire',
+      color: 'bg-orange-600 hover:bg-orange-700',
+      label: translations.social?.curseforge || 'CurseForge'
     },
   ];
 
