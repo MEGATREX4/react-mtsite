@@ -82,14 +82,16 @@ export const Home: React.FC = () => {
       url: 'https://modrinth.com/user/MEGATREX4',
       icon: 'fas fa-cube',
       color: 'bg-green-700 hover:bg-green-800',
-      label: translations.social?.modrinth || 'Modrinth'
+      label: translations.social?.modrinth || 'Modrinth',
+      isPrimary: true
     },
     {
       platform: 'curseforge',
       url: 'https://www.curseforge.com/members/megatrex4/projects',
       icon: 'fas fa-fire',
       color: 'bg-orange-600 hover:bg-orange-700',
-      label: translations.social?.curseforge || 'CurseForge'
+      label: translations.social?.curseforge || 'CurseForge',
+      isPrimary: true
     },
   ];
 
