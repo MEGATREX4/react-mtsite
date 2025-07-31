@@ -14,7 +14,7 @@ export const loadCompletedGames = async (): Promise<CompletedGame[]> => {
     const data = await response.json();
     // Validate and map to CompletedGame type
     return Array.isArray(data)
-      ? data.map((game, idx) => ({
+      ? data.map((game) => ({
           name: game.name || '',
           steamId: game.steamId,
           rating: game.rating,
