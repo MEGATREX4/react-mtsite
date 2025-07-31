@@ -18,6 +18,7 @@ function App() {
 }
 
 const PCLazy = React.lazy(() => import('./pages/PC'));
+const CompletedGamesLazy = React.lazy(() => import('./pages/CompletedGames'));
 
 const AppContent: React.FC = () => {
   const { changeLanguage } = useAppContext();
@@ -45,10 +46,15 @@ const AppContent: React.FC = () => {
     <Router>
       <div className="min-h-screen bg-white dark:bg-dark-900 text-gray-900 dark:text-gray-100">
         <Header />
-        <main className="min-h-screen">
+        <main className="min-h-screen pt-24">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/portfolio" element={<Portfolio />} />
+           <Route path="/completed-games" element={
+             <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-xl">Loading...</div>}>
+               <CompletedGamesLazy />
+             </Suspense>
+           } />
             <Route path="/pc" element={
               <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-xl">Loading...</div>}>
                 <PCLazy />

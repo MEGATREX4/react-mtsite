@@ -57,6 +57,7 @@ export interface Translations {
     home: string;
     about: string;
     portfolio: string;
+    completedGames: string;
     contact: string;
     language: string;
     theme: string;

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Undertale",
+    "steamId": 84071,
+    "rating": 6,
+    "gameUrl": "https://store.steampowered.com/app/391540/Undertale/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/014f6631d5840dba68d43666662e1052.jpg"
+  },
+  {
+    "name": "Minecraft",
+    "steamId": 459025,
+    "rating": 10,
+    "gameUrl": "https://www.minecraft.net/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/1a22f0ef3aec25d1cb15d26895d13b88.jpg"
+  },
+  {
+    "name": "Metro 2033",
+    "steamId": 37767,
+    "rating": 4.5,
+    "gameUrl": "https://store.steampowered.com/app/43110/Metro_2033/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/c79b09261c899f5507ac7bdf8e993f2b.jpg"
+  }
+]

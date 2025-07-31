@@ -8,6 +8,7 @@ export const loadTranslations = async (language: Language): Promise<Translations
         common: {
           home: 'Головна',
           portfolio: 'Портфоліо',
+          completedGames: 'Пройдені ігри',
           about: 'Про мене',
           contact: 'Контакти',
           language: 'Мова',
@@ -77,6 +78,7 @@ export const loadTranslations = async (language: Language): Promise<Translations
         common: {
           home: 'Home',
           portfolio: 'Portfolio',
+          completedGames: 'Completed Games',
           about: 'About',
           contact: 'Contact',
           language: 'Language',

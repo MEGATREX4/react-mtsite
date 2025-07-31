@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from './AppProvider';
@@ -9,20 +9,48 @@ export const Header: React.FC = () => {
   const location = useLocation();
   const scrollPosition = useScrollPosition();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  if (!translations) return null;
+  const [visibleItems, setVisibleItems] = useState<number>(4);
+  const navRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const isScrolled = scrollPosition > 50;
 
   const navigationItems = [
-    { path: '/', label: translations.common.home, icon: 'fas fa-home' },
-    { path: '/portfolio', label: translations.common.portfolio, icon: 'fas fa-briefcase' },
+    { path: '/', label: translations?.common?.home || 'Home', icon: 'fas fa-home' },
+    { path: '/portfolio', label: translations?.common?.portfolio || 'Portfolio', icon: 'fas fa-briefcase' },
+    { path: '/completed-games', label: language === 'uk' ? 'Пройдені ігри' : 'Completed Games', icon: 'fas fa-gamepad' },
     { path: '/pc', label: language === 'uk' ? 'ПК' : 'PC', icon: 'fas fa-desktop' },
   ];
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
+
+  // Calculate how many items can fit in the navigation
+  useEffect(() => {
+    const calculateVisibleItems = () => {
+      if (!navRef.current || !containerRef.current) return;
+      
+      const containerWidth = containerRef.current.offsetWidth;
+      const logoWidth = 200; // Approximate logo width
+      const controlsWidth = 200; // Approximate controls width
+      const availableWidth = containerWidth - logoWidth - controlsWidth - 48; // padding
+      const itemWidth = 150; // Approximate item width
+      
+      const maxItems = Math.floor(availableWidth / itemWidth);
+      setVisibleItems(Math.max(1, Math.min(maxItems, navigationItems.length)));
+    };
+
+    calculateVisibleItems();
+    window.addEventListener('resize', calculateVisibleItems);
+    return () => window.removeEventListener('resize', calculateVisibleItems);
+  }, [navigationItems.length]);
+
+  const desktopItems = navigationItems.slice(0, visibleItems);
+  const overflowItems = navigationItems.slice(visibleItems);
+  const hasOverflow = overflowItems.length > 0;
+
+  if (!translations) return null;
 
   return (
     <motion.header
@@ -36,7 +64,7 @@ export const Header: React.FC = () => {
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <nav className="container mx-auto px-4 py-4">
+      <nav className={`container mx-auto px-4 py-4 mb-10${isMobileMenuOpen ? ' overflow-hidden' : ''}`} ref={containerRef}> 
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 text-xl font-bold">
@@ -51,8 +79,8 @@ export const Header: React.FC = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {navigationItems.map((item) => (
+          <div className="hidden md:flex items-center space-x-6" ref={navRef}>
+            {desktopItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -103,10 +131,10 @@ export const Header: React.FC = () => {
               <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'} />
             </button>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Show if mobile or has overflow */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-dark-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors duration-200"
+              className={`${hasOverflow ? 'block' : 'md:hidden'} p-2 rounded-lg bg-gray-100 dark:bg-dark-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-600 transition-colors duration-200`}
               aria-label="Toggle mobile menu"
             >
               <i className={isMobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'} />
@@ -122,11 +150,11 @@ export const Header: React.FC = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              // 2. Спрощено класи, бо дублюючі контролери видалені
-              className="md:hidden mt-4 border-t border-gray-200 dark:border-dark-700"
+              className="mt-4 border-t border-gray-200 dark:border-dark-700"
             >
               <div className="flex flex-col space-y-2 pt-4">
-                {navigationItems.map((item) => (
+                {/* Show overflow items on desktop, all items on mobile */}
+                {(hasOverflow && window.innerWidth >= 768 ? overflowItems : navigationItems).map((item) => (
                   <Link
                     key={item.path}
                     to={item.path}
