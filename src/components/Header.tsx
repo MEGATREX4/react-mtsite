@@ -18,7 +18,7 @@ export const Header: React.FC = () => {
   const navigationItems = [
     { path: '/', label: translations?.common?.home || 'Home', icon: 'fas fa-home' },
     { path: '/portfolio', label: translations?.common?.portfolio || 'Portfolio', icon: 'fas fa-briefcase' },
-    { path: '/completed-games', label: language === 'uk' ? 'Пройдені ігри' : 'Completed Games', icon: 'fas fa-gamepad' },
+    { path: '/completed_games', label: language === 'uk' ? 'Пройдені ігри' : 'Completed Games', icon: 'fas fa-gamepad' },
     { path: '/pc', label: language === 'uk' ? 'ПК' : 'PC', icon: 'fas fa-desktop' },
   ];
 

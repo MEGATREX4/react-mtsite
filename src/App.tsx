@@ -50,7 +50,7 @@ const AppContent: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/portfolio" element={<Portfolio />} />
-           <Route path="/completed-games" element={
+           <Route path="/completed_games" element={
              <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-xl">Loading...</div>}>
                <CompletedGamesLazy />
              </Suspense>
