@@ -1,3 +1,33 @@
+// Type for completed games
+export interface CompletedGame {
+  name: string;
+  steamId?: number;
+  rating?: number;
+  gameUrl?: string;
+  youtubeUrl?: string;
+  coverUrl?: string;
+}
+
+export const loadCompletedGames = async (): Promise<CompletedGame[]> => {
+  try {
+    const response = await fetch('/completedGames.json');
+    const data = await response.json();
+    // Validate and map to CompletedGame type
+    return Array.isArray(data)
+      ? data.map((game, idx) => ({
+          name: game.name || '',
+          steamId: game.steamId,
+          rating: game.rating,
+          gameUrl: game.gameUrl,
+          youtubeUrl: game.youtubeUrl,
+          coverUrl: game.coverUrl,
+        }))
+      : [];
+  } catch (error) {
+    console.error('Error loading completed games:', error);
+    return [];
+  }
+};
 import type { GalleryImage, YouTubeVideo } from '../types';
 
 // YouTube API configuration

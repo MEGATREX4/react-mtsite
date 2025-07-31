@@ -1,20 +1,13 @@
 
+
 import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../components/AppProvider';
-
-interface Game {
-  name: string;
-  steamId?: number;
-  rating?: number;
-  gameUrl?: string;
-  youtubeUrl?: string;
-  coverUrl?: string;
-}
+import { loadCompletedGames, CompletedGame } from '../utils/api';
 
 
-export const CompletedGames: React.FC = () => {
-  const [games, setGames] = useState<Game[]>([]);
+  const [games, setGames] = useState<CompletedGame[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
     if (typeof window !== 'undefined') {
       return (localStorage.getItem('completedGamesViewMode') as 'grid' | 'list') || 'grid';
@@ -24,15 +17,21 @@ export const CompletedGames: React.FC = () => {
   const { translations, language } = useAppContext();
 
   useEffect(() => {
-    fetch('/src/assets/completedGames.json')
-      .then((res) => res.json())
-      .then((data) => {
-        setGames(data);
+    const fetchGames = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const loadedGames = await loadCompletedGames();
+        setGames(loadedGames);
+      } catch (err) {
+        setError('Failed to load completed games');
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+    fetchGames();
   }, []);
 
-  // Save viewMode to localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('completedGamesViewMode', viewMode);
@@ -41,6 +40,9 @@ export const CompletedGames: React.FC = () => {
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center text-xl">Loading...</div>;
+  }
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center text-xl text-red-500">{error}</div>;
   }
 
   return (
