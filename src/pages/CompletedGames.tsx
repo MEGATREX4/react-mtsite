@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../components/AppProvider';
-import { loadCompletedGames, CompletedGame } from '../utils/api';
+import { loadCompletedGames } from '../utils/api';
+import type { CompletedGame } from '../utils/api';
 
-
+const CompletedGames: React.FC = () => {
   const [games, setGames] = useState<CompletedGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -200,5 +201,6 @@ import { loadCompletedGames, CompletedGame } from '../utils/api';
     </div>
   );
 };
+
 
 export default CompletedGames;
