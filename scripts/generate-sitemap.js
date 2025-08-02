@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -52,11 +52,12 @@ function extractRoutesFromApp() {
 
 // Generate sitemap
 function generateSitemap() {
-  const hostname = 'https://megatrex4.netlify.app';
-  const routes = extractRoutesFromApp();
-  const currentDate = new Date().toISOString().split('T')[0];
-  
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+  try {
+    const hostname = 'https://megatrex4.netlify.app';
+    const routes = extractRoutesFromApp();
+    const currentDate = new Date().toISOString().split('T')[0];
+    
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${routes.map(route => `  <url>
     <loc>${hostname}${route.path}</loc>
@@ -66,14 +67,25 @@ ${routes.map(route => `  <url>
   </url>`).join('\n')}
 </urlset>`;
 
-  const distPath = resolve(__dirname, '../dist/sitemap.xml');
-  writeFileSync(distPath, sitemap);
-  
-  console.log('✅ Sitemap generated from React Router routes:');
-  routes.forEach(route => {
-    console.log(`   ${route.path} (priority: ${route.priority})`);
-  });
-  console.log(`📍 Saved to: ${distPath}`);
+    const distPath = resolve(__dirname, '../dist/sitemap.xml');
+    const distDir = dirname(distPath);
+    
+    // Ensure dist directory exists
+    if (!existsSync(distDir)) {
+      mkdirSync(distDir, { recursive: true });
+    }
+    
+    writeFileSync(distPath, sitemap);
+    
+    console.log('✅ Sitemap generated from React Router routes:');
+    routes.forEach(route => {
+      console.log(`   ${route.path} (priority: ${route.priority})`);
+    });
+    console.log(`📍 Saved to: ${distPath}`);
+  } catch (error) {
+    console.error('❌ Error generating sitemap:', error.message);
+    process.exit(1);
+  }
 }
 
 generateSitemap();

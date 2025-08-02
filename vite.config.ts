@@ -10,10 +10,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const generateSitemap = () => {
   return {
     name: 'generate-sitemap',
-    writeBundle() {
+    closeBundle() {
       try {
-        // Run the sitemap generation script
-        execSync(`node ${resolve(__dirname, 'scripts/generate-sitemap.js')}`, { 
+        // Run the sitemap generation script with proper path quoting
+        const scriptPath = resolve(__dirname, 'scripts/generate-sitemap.js');
+        execSync(`node "${scriptPath}"`, { 
           stdio: 'inherit',
           cwd: __dirname 
         });
