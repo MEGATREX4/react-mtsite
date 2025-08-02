@@ -93,7 +93,7 @@ export const loadGalleryImages = async (): Promise<GalleryImage[]> => {
     const response = await fetch('/images.json');
     const data = await response.json();
     
-    return data.galeryimages.map((img: any, index: number) => ({
+    const mappedImages = data.galeryimages.map((img: any, index: number) => ({
       id: img.id || index.toString(),
       url: img.url || '',
       title: img.title || '',
@@ -104,7 +104,16 @@ export const loadGalleryImages = async (): Promise<GalleryImage[]> => {
       downloadUrl: img.downloadUrl,
       projectUrl: img.projectUrl,
       featured: img.featured || false,
+      variants: img.variants || undefined, // Include variants array from JSON
     }));
+    
+    // Debug: Log items with variants
+    const itemsWithVariants = mappedImages.filter((img: GalleryImage) => img.variants && img.variants.length > 0);
+    if (itemsWithVariants.length > 0) {
+      console.log('Items with variants found:', itemsWithVariants.map((img: GalleryImage) => ({ id: img.id, title: img.title, variants: img.variants })));
+    }
+    
+    return mappedImages;
   } catch (error) {
     console.error('Error loading gallery images:', error);
     return [];
