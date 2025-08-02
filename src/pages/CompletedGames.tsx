@@ -6,6 +6,71 @@ import { useAppContext } from '../components/AppProvider';
 import { loadCompletedGames } from '../utils/api';
 import type { CompletedGame } from '../utils/api';
 
+// Custom CSS for subgrid support
+const subgridStyles = `
+  .completed-games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    grid-auto-rows: max-content;
+  }
+  
+  .completed-game-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 6;
+    align-items: stretch;
+  }
+  
+  .completed-game-content {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 6;
+    gap: 0.75rem;
+  }
+  
+  @supports not (grid-template-rows: subgrid) {
+    .completed-game-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .completed-game-content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      gap: 0.75rem;
+    }
+    .completed-game-footer {
+      margin-top: auto;
+    }
+  }
+  
+  @media (min-width: 640px) {
+    .completed-games-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .completed-games-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .completed-games-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .completed-games-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+`;
+
 const CompletedGamesComponent: React.FC = () => {
   const [games, setGames] = useState<CompletedGame[]>([]);
   const [filteredGames, setFilteredGames] = useState<CompletedGame[]>([]);
@@ -70,9 +135,9 @@ const CompletedGamesComponent: React.FC = () => {
       // Show crossed-out stars for currently playing/unrated games
       return (
         <div className="flex items-center gap-1">
-          {Array.from({ length: 10 }).map((_, i) => (
+          {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="relative">
-              <i className="fas fa-star text-gray-400 dark:text-gray-500 text-xs" />
+              <i className="fas fa-star text-gray-400 dark:text-gray-500 text-sm" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-full h-px bg-red-500 transform rotate-12"></div>
               </div>
@@ -88,18 +153,19 @@ const CompletedGamesComponent: React.FC = () => {
       );
     }
 
-    // Show normal rating stars
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
+    // Convert 10-point rating to 5-star system (rating / 2)
+    const starRating = rating / 2;
+    const fullStars = Math.floor(starRating);
+    const hasHalfStar = starRating % 1 >= 0.5;
     
     return (
       <div className="flex items-center gap-1">
         {Array.from({ length: fullStars }).map((_, i) => (
-          <i key={i} className="fas fa-star text-yellow-400 text-xs" />
+          <i key={i} className="fas fa-star text-yellow-400 text-sm" />
         ))}
-        {hasHalfStar && <i className="fas fa-star-half-alt text-yellow-400 text-xs" />}
-        {Array.from({ length: 10 - fullStars - (hasHalfStar ? 1 : 0) }).map((_, i) => (
-          <i key={i + fullStars + (hasHalfStar ? 1 : 0)} className="far fa-star text-gray-300 dark:text-gray-600 text-xs" />
+        {hasHalfStar && <i className="fas fa-star-half-alt text-yellow-400 text-sm" />}
+        {Array.from({ length: 5 - fullStars - (hasHalfStar ? 1 : 0) }).map((_, i) => (
+          <i key={i + fullStars + (hasHalfStar ? 1 : 0)} className="far fa-star text-gray-300 dark:text-gray-600 text-sm" />
         ))}
         <span className="text-xs font-bold text-gray-700 dark:text-gray-300 ml-1">
           {rating}/10
@@ -202,6 +268,9 @@ const CompletedGamesComponent: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-white via-primary-50/30 to-primary-100/50 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/20 relative overflow-hidden">
       {/* Enhanced Background Animation */}
       {backgroundAnimation}
+      
+      {/* Inject custom CSS for subgrid */}
+      <style dangerouslySetInnerHTML={{ __html: subgridStyles }} />
 
       <div className="container mx-auto px-4 py-16 relative z-10">
         <div className="max-w-7xl mx-auto">
@@ -333,10 +402,10 @@ const CompletedGamesComponent: React.FC = () => {
                   className="px-3 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-primary-200/50 dark:border-primary-700/50 rounded-xl shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white text-sm"
                 >
                   <option value="">{language === 'uk' ? 'Всі рейтинги' : 'All ratings'}</option>
-                  <option value="8">{language === 'uk' ? '8+ зірок' : '8+ stars'}</option>
-                  <option value="7">{language === 'uk' ? '7+ зірок' : '7+ stars'}</option>
-                  <option value="6">{language === 'uk' ? '6+ зірок' : '6+ stars'}</option>
-                  <option value="5">{language === 'uk' ? '5+ зірок' : '5+ stars'}</option>
+                  <option value="8">{language === 'uk' ? '4+ зірки (8+ балів)' : '4+ stars (8+ points)'}</option>
+                  <option value="6">{language === 'uk' ? '3+ зірки (6+ балів)' : '3+ stars (6+ points)'}</option>
+                  <option value="4">{language === 'uk' ? '2+ зірки (4+ бали)' : '2+ stars (4+ points)'}</option>
+                  <option value="2">{language === 'uk' ? '1+ зірка (2+ бали)' : '1+ star (2+ points)'}</option>
                 </select>
               </div>
 
@@ -396,20 +465,20 @@ const CompletedGamesComponent: React.FC = () => {
               </button>
             </div>
           ) : viewMode === 'grid' ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className="completed-games-grid">
               {filteredGames.map((game, index) => (
                 <motion.div
                   key={game.name}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg hover:shadow-2xl border border-primary-200/50 dark:border-primary-700/50 transition-all duration-300 hover:-translate-y-2 max-h-[520px]"
+                  className="completed-game-card group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg hover:shadow-2xl border border-primary-200/50 dark:border-primary-700/50 transition-all duration-300 hover:-translate-y-2"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-primary-400/10 to-primary-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   
-                  <div className="relative z-10 p-4 h-full flex flex-col">
-                    {/* Game Cover */}
-                    <div className="w-full aspect-[2/3] overflow-hidden rounded-xl mb-3 relative">
+                  <div className="completed-game-content relative z-10 p-4">
+                    {/* Game Cover - Row 1 */}
+                    <div className="w-full aspect-[2/3] overflow-hidden rounded-xl relative">
                       {game.coverUrl ? (
                         <img 
                           src={game.coverUrl} 
@@ -443,37 +512,42 @@ const CompletedGamesComponent: React.FC = () => {
                       )}
                     </div>
 
-                    {/* Game Title */}
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 text-center line-clamp-2 flex-shrink-0">
+                    {/* Game Title - Row 2 */}
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white text-center line-clamp-2">
                       {game.name}
                     </h3>
 
-                    {/* Tags */}
-                    {game.tags && game.tags.length > 0 && (
-                      <div className="flex flex-wrap justify-center gap-1 mb-2 flex-shrink-0">
-                        {game.tags.slice(0, 3).map(tag => (
-                          <span
-                            key={tag}
-                            className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs rounded-full border border-primary-200 dark:border-primary-700/50"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                        {game.tags.length > 3 && (
-                          <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs rounded-full border border-gray-200 dark:border-gray-700">
-                            +{game.tags.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    )}
+                    {/* Tags - Row 3 */}
+                    <div className="flex flex-wrap justify-center gap-1 min-h-[3.5rem] items-start content-start">
+                      {game.tags && game.tags.length > 0 ? (
+                        <>
+                          {game.tags.slice(0, 3).map(tag => (
+                            <span
+                              key={tag}
+                              className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs rounded-full border border-primary-200 dark:border-primary-700/50"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          {game.tags.length > 3 && (
+                            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs rounded-full border border-gray-200 dark:border-gray-700">
+                              +{game.tags.length - 3}
+                            </span>
+                          )}
+                        </>
+                      ) : null}
+                    </div>
 
-                    {/* Star Rating */}
-                    <div className="flex items-center justify-center mb-3 flex-shrink-0">
+                    {/* Star Rating - Row 4 */}
+                    <div className="flex items-center justify-center">
                       {renderRating(game.rating, game.isCurrentlyPlaying)}
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="mt-auto space-y-2">
+                    {/* Spacer - Row 5 */}
+                    <div className="flex-1"></div>
+
+                    {/* Action Buttons - Row 6 */}
+                    <div className="completed-game-footer space-y-2">
                       {game.gameUrl && (
                         <a
                           href={game.gameUrl}
