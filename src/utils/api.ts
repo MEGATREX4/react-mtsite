@@ -104,7 +104,6 @@ export const loadGalleryImages = async (): Promise<GalleryImage[]> => {
       downloadUrl: img.downloadUrl,
       projectUrl: img.projectUrl,
       featured: img.featured || false,
-      variants: img.variants || undefined,
     }));
   } catch (error) {
     console.error('Error loading gallery images:', error);
