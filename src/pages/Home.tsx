@@ -1,13 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../components/AppProvider';
 import { SocialButtons } from '../components/SocialButtons';
 import { fetchLatestVideo } from '../utils/api';
 import type { YouTubeVideo } from '../types';
 
-export const Home: React.FC = () => {
+const HomeComponent: React.FC = () => {
   const { translations, language } = useAppContext();
   const [latestVideo, setLatestVideo] = useState<YouTubeVideo | null>(null);
+
+  // Memoize background particles to prevent re-calculation on re-renders
+  const [backgroundParticles] = useState(() => 
+    Array.from({ length: 12 }, (_, i) => ({
+      id: `bg-particle-${i}`,
+      width: Math.random() * 80 + 30,
+      height: Math.random() * 80 + 30,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      duration: Math.random() * 10 + 8,
+    }))
+  );
+
+  // Memoized background animation to prevent re-renders
+  const backgroundAnimation = useMemo(() => (
+    <div className="absolute inset-0 opacity-20 dark:opacity-30">
+      {backgroundParticles.map((particle) => (
+        <motion.div
+          key={particle.id}
+          className="absolute bg-primary-400/40 dark:bg-primary-500/50 rounded-full"
+          style={{
+            width: particle.width,
+            height: particle.height,
+            left: `${particle.left}%`,
+            top: `${particle.top}%`,
+          }}
+          animate={{
+            y: [-15, 15, -15],
+            x: [-10, 10, -10],
+            scale: [1, 1.3, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  ), [backgroundParticles]);
 
   useEffect(() => {
     const loadVideo = async () => {
@@ -117,31 +158,7 @@ export const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-primary-50/30 to-primary-100/50 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/20 relative overflow-hidden">
       {/* Enhanced Background Animation */}
-      <div className="absolute inset-0 opacity-20 dark:opacity-30">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute bg-primary-400/40 dark:bg-primary-500/50 rounded-full"
-            style={{
-              width: Math.random() * 80 + 30,
-              height: Math.random() * 80 + 30,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [-15, 15, -15],
-              x: [-10, 10, -10],
-              scale: [1, 1.3, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
+      {backgroundAnimation}
 
       <div className="container mx-auto px-4 py-16 relative z-10">
         <div className="max-w-lg mx-auto">
@@ -259,3 +276,5 @@ export const Home: React.FC = () => {
     </div>
   );
 };
+
+export const Home = React.memo(HomeComponent);

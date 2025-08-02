@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useAppContext } from '../components/AppProvider';
@@ -7,30 +7,241 @@ import { loadGalleryImages, getCategoryDisplayName } from '../utils/api';
 import type { GalleryImage } from '../types';
 import type { ProjectBannerProps } from '../components/ProjectBanner';
 
-export const Portfolio: React.FC = () => {
+const PortfolioComponent: React.FC = () => {
   const { translations, language } = useAppContext();
   const [images, setImages] = useState<GalleryImage[]>([]);
-  const [filteredImages, setFilteredImages] = useState<GalleryImage[]>([]);
+  const [filteredImages, setFilteredImages] = useState<(GalleryImage & { variants?: string[] })[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  const [selectedImageVariants, setSelectedImageVariants] = useState<string[]>([]);
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'date' | 'title' | 'category'>('date');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(20);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [hoverVariantIndex, setHoverVariantIndex] = useState<{ [key: string]: number }>({});
+  const [mouseThrottle, setMouseThrottle] = useState<{ [key: string]: number }>({});
+
+  // Memoize background particles to prevent re-calculation on re-renders
+  const backgroundParticles = useState(() => 
+    Array.from({ length: 8 }, (_, i) => ({
+      id: `bg-particle-${i}`,
+      width: Math.random() * 60 + 20,
+      height: Math.random() * 60 + 20,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      duration: Math.random() * 8 + 6,
+    }))
+  )[0];
+
+  // Memoized background animation to prevent re-renders
+  const backgroundAnimation = useMemo(() => (
+    <div className="fixed inset-0 opacity-20 dark:opacity-30 pointer-events-none z-0">
+      {backgroundParticles.map((particle) => (
+        <motion.div
+          key={particle.id}
+          className="absolute bg-primary-400/40 dark:bg-primary-500/50 rounded-full will-change-transform"
+          style={{
+            width: particle.width,
+            height: particle.height,
+            left: `${particle.left}%`,
+            top: `${particle.top}%`,
+          }}
+          animate={{
+            y: [-10, 10, -10],
+            x: [-8, 8, -8],
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            ease: "easeInOut",
+            repeatType: "loop",
+          }}
+        />
+      ))}
+    </div>
+  ), [backgroundParticles]);
+
+  // Helper function to group similar items
+  const groupSimilarItems = useCallback((items: GalleryImage[]) => {
+    const groups: { [key: string]: GalleryImage[] } = {};
+    const groupedItems: (GalleryImage & { variants?: string[] })[] = [];
+    const processedIds = new Set<string>();
+    
+    items.forEach(item => {
+      // Skip if already processed
+      if (processedIds.has(item.id)) return;
+
+      // Check if item already has variants array (pre-grouped in JSON)
+      if (item.variants && Array.isArray(item.variants)) {
+        // Item is already grouped, add it directly
+        groupedItems.push(item);
+        processedIds.add(item.id);
+        return;
+      }
+      
+      // Create a normalized key for grouping
+      let normalizedTitle = item.title
+        ?.toLowerCase()
+        .replace(/\d+/g, '') // Remove numbers
+        .replace(/\s+/g, ' ') // Normalize spaces
+        .trim();
+      
+      // Special cases for better grouping
+      if (normalizedTitle?.includes('holyday globe') || normalizedTitle?.includes('holiday globe')) {
+        normalizedTitle = 'holyday globe';
+      }
+      if (normalizedTitle?.includes('mixer')) {
+        normalizedTitle = 'mixer';
+      }
+      if (normalizedTitle?.includes('mt ') || normalizedTitle?.startsWith('mt-')) {
+        // Group MT projects by removing the "MT" prefix and normalizing
+        normalizedTitle = normalizedTitle.replace(/^mt[\s-]*/, '').trim();
+      }
+      
+      if (normalizedTitle) {
+        if (!groups[normalizedTitle]) {
+          groups[normalizedTitle] = [];
+        }
+        groups[normalizedTitle].push(item);
+        processedIds.add(item.id);
+      }
+    });
+    
+    // Convert groups to array format with main item and variants
+    Object.values(groups).forEach(group => {
+      if (group.length > 1) {
+        // Sort by ID to get consistent main item (lowest ID first)
+        group.sort((a, b) => parseInt(a.id || '0') - parseInt(b.id || '0'));
+        const mainItem = { 
+          ...group[0], 
+          variants: group.map(item => item.url) // Convert to URL array
+        };
+        groupedItems.push(mainItem);
+      } else {
+        // Single item, no grouping needed
+        groupedItems.push(group[0]);
+      }
+    });
+    
+    return groupedItems;
+  }, []);
+
+  // Helper function to get category priority for sorting
+  const getCategoryPriority = useCallback((category: string | undefined) => {
+    const cat = (category || '').toLowerCase();
+    if (cat.includes('3d') || cat.includes('model') || cat.includes('blender') || cat.includes('render')) return 1;
+    if (cat.includes('website') || cat.includes('web') || cat.includes('site')) return 2;
+    if (cat.includes('project') || cat.includes('app') || cat.includes('application')) return 3;
+    return 4; // All others
+  }, []);
+
+  // Helper function to sort images
+  const sortImages = useCallback((imagesToSort: GalleryImage[]) => {
+    return imagesToSort.sort((a, b) => {
+      switch (sortBy) {
+        case 'title':
+          return (a.title || '').localeCompare(b.title || '');
+        case 'category':
+          return (a.category || '').localeCompare(b.category || '');
+        case 'date':
+        default:
+          // First sort by category priority, then by date (newer first)
+          const aPriority = getCategoryPriority(a.category);
+          const bPriority = getCategoryPriority(b.category);
+          
+          if (aPriority !== bPriority) {
+            return aPriority - bPriority; // Lower priority number = higher priority
+          }
+          
+          // If same priority, sort by date (newer images have higher IDs)
+          return parseInt(b.id || '0') - parseInt(a.id || '0');
+      }
+    });
+  }, [sortBy, getCategoryPriority]);
 
   // Move all useCallback hooks right after state declarations
-  const openModal = useCallback((image: GalleryImage) => {
+  const openModal = useCallback((image: GalleryImage & { variants?: string[] }) => {
     setSelectedImage(image);
+    if (image.variants && image.variants.length > 1) {
+      setSelectedImageVariants(image.variants);
+      setSelectedVariantIndex(0);
+    } else {
+      setSelectedImageVariants([]);
+      setSelectedVariantIndex(0);
+    }
     document.body.style.overflow = 'hidden';
   }, []);
 
   const closeModal = useCallback(() => {
     setSelectedImage(null);
+    setSelectedImageVariants([]);
+    setSelectedVariantIndex(0);
     document.body.style.overflow = 'auto';
   }, []);
 
   const navigateImage = useCallback((direction: 'prev' | 'next') => {
     if (!selectedImage) return;
     
+    // If we have variants for the current image, navigate through them first
+    if (selectedImageVariants.length > 1) {
+      let newVariantIndex: number;
+      
+      if (direction === 'prev') {
+        newVariantIndex = selectedVariantIndex > 0 
+          ? selectedVariantIndex - 1 
+          : selectedImageVariants.length - 1;
+      } else {
+        newVariantIndex = selectedVariantIndex < selectedImageVariants.length - 1 
+          ? selectedVariantIndex + 1 
+          : 0;
+      }
+      
+      // If we're cycling through variants and reach the end, move to next item
+      if (direction === 'next' && selectedVariantIndex === selectedImageVariants.length - 1) {
+        // Move to next item in the list
+        const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
+        const nextIndex = currentIndex < filteredImages.length - 1 ? currentIndex + 1 : 0;
+        const newItem = filteredImages[nextIndex];
+        
+        setSelectedImage(newItem);
+        if (newItem.variants && newItem.variants.length > 1) {
+          setSelectedImageVariants(newItem.variants);
+          setSelectedVariantIndex(0);
+        } else {
+          setSelectedImageVariants([]);
+          setSelectedVariantIndex(0);
+        }
+        return;
+      }
+      
+      // If we're cycling through variants and reach the beginning, move to previous item
+      if (direction === 'prev' && selectedVariantIndex === 0) {
+        const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : filteredImages.length - 1;
+        const newItem = filteredImages[prevIndex];
+        
+        setSelectedImage(newItem);
+        if (newItem.variants && newItem.variants.length > 1) {
+          setSelectedImageVariants(newItem.variants);
+          setSelectedVariantIndex(newItem.variants.length - 1); // Start from last variant
+        } else {
+          setSelectedImageVariants([]);
+          setSelectedVariantIndex(0);
+        }
+        return;
+      }
+      
+      // Normal variant navigation - just update the index
+      setSelectedVariantIndex(newVariantIndex);
+      return;
+    }
+    
+    // Navigate through different items
     const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
     let newIndex: number;
     
@@ -40,8 +251,16 @@ export const Portfolio: React.FC = () => {
       newIndex = currentIndex < filteredImages.length - 1 ? currentIndex + 1 : 0;
     }
     
-    setSelectedImage(filteredImages[newIndex]);
-  }, [selectedImage, filteredImages]);
+    const newItem = filteredImages[newIndex];
+    setSelectedImage(newItem);
+    if (newItem.variants && newItem.variants.length > 1) {
+      setSelectedImageVariants(newItem.variants);
+      setSelectedVariantIndex(0);
+    } else {
+      setSelectedImageVariants([]);
+      setSelectedVariantIndex(0);
+    }
+  }, [selectedImage, filteredImages, selectedImageVariants, selectedVariantIndex]);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -49,22 +268,14 @@ export const Portfolio: React.FC = () => {
       try {
         const galleryImages = await loadGalleryImages();
 
-        // Sort images immediately after loading
-        galleryImages.sort((a, b) => {
-          switch (sortBy) {
-            case 'title':
-              return (a.title || '').localeCompare(b.title || '');
-            case 'category':
-              return (a.category || '').localeCompare(b.category || '');
-            case 'date':
-            default:
-              // Assuming newer images have higher IDs
-              return parseInt(b.id || '0') - parseInt(a.id || '0');
-          }
-        });
+        // Sort images immediately after loading with priority order
+        const sortedImages = sortImages([...galleryImages]);
+        
+        // Group similar items
+        const groupedImages = groupSimilarItems(sortedImages);
 
-        setImages(galleryImages);
-        setFilteredImages(galleryImages);
+        setImages(galleryImages); // Keep original for categories
+        setFilteredImages(groupedImages);
       } catch (error) {
         console.error('Error loading gallery images:', error);
       } finally {
@@ -73,7 +284,7 @@ export const Portfolio: React.FC = () => {
     };
 
     loadImages();
-  }, [sortBy]);
+  }, [sortBy, sortImages, groupSimilarItems]);
 
   useEffect(() => {
     let filtered = images;
@@ -94,22 +305,31 @@ export const Portfolio: React.FC = () => {
       );
     }
 
-    // Sort images
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'title':
-          return (a.title || '').localeCompare(b.title || '');
-        case 'category':
-          return (a.category || '').localeCompare(b.category || '');
-        case 'date':
-        default:
-          // Assuming newer images have higher IDs
-          return parseInt(b.id || '0') - parseInt(a.id || '0');
-      }
-    });
+    // Sort filtered images
+    const sortedFiltered = sortImages([...filtered]);
+    
+    // Group similar items after filtering
+    const groupedFiltered = groupSimilarItems(sortedFiltered);
 
-    setFilteredImages(filtered);
-  }, [activeCategory, images, searchQuery, sortBy]);
+    setFilteredImages(groupedFiltered);
+    setCurrentPage(1); // Reset to first page when filters change
+  }, [activeCategory, images, searchQuery, sortBy, sortImages, groupSimilarItems]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredImages.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentImages = filteredImages.slice(startIndex, endIndex);
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of grid
+    const gridElement = document.getElementById('portfolio-grid');
+    if (gridElement) {
+      gridElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   // Keyboard navigation
   useEffect(() => {
@@ -198,34 +418,10 @@ export const Portfolio: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-primary-50/30 to-primary-100/50 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/20 relative overflow-hidden">
-      {/* Enhanced Background Animation */}
-      <div className="absolute inset-0 opacity-20 dark:opacity-30">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute bg-primary-400/40 dark:bg-primary-500/50 rounded-full"
-            style={{
-              width: Math.random() * 60 + 20,
-              height: Math.random() * 60 + 20,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [-10, 10, -10],
-              x: [-8, 8, -8],
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: Math.random() * 8 + 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
+      {/* Enhanced Background Animation - Memoized and isolated from hover interactions */}
+      {backgroundAnimation}
 
-      <div className="container mx-auto px-4 py-16 relative z-10">
+      <div className="container mx-auto px-4 py-16 relative z-20">
         <div className="max-w-7xl mx-auto">
           {/* Enhanced Header */}
           <div className="text-center mb-12">
@@ -346,7 +542,7 @@ export const Portfolio: React.FC = () => {
           {/* Enhanced Projects Grid */}
 
           {/* Enhanced Projects Grid */}
-          {filteredImages.length === 0 && !isLoading ? (
+          {currentImages.length === 0 && !isLoading ? (
             <div className="text-center py-16">
               <div className="w-20 h-20 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-full mx-auto shadow-lg border-4 border-white dark:border-gray-600 relative z-10 flex items-center justify-center mb-6">
                 <i className="fas fa-search text-2xl text-gray-400 dark:text-gray-500" />
@@ -380,109 +576,258 @@ export const Portfolio: React.FC = () => {
             </div>
           ) : (
             <motion.div
+              id="portfolio-grid"
               className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
               layout
             >
               <AnimatePresence>
-                {filteredImages.map((image, index) => (
-                  <motion.div
-                    key={image.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                    className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg hover:shadow-xl border border-primary-200/50 dark:border-primary-700/50 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-                    onClick={() => openModal(image)}
-                  >
-                    {/* Removed the flashing background overlay that was causing issues */}
-                    
-                    <div className="relative z-10 p-4 h-full flex flex-col">
-                      {/* Project Cover */}
-                      <div className="w-full aspect-square overflow-hidden rounded-xl mb-3 relative">
-                        <LazyLoadImage
-                          src={image.url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f0f0f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E'}
-                          alt={image.title || 'No Image Available'}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                          effect="opacity"
-                          placeholderSrc="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999'%3ELoading...%3C/text%3E%3C/svg%3E"
-                          wrapperClassName="w-full h-full"
-                        />
-                        
-                        {/* Overlay - Made much more subtle */}
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500 ease-out flex items-center justify-center rounded-xl">
-                          <div className="transform scale-0 group-hover:scale-100 transition-all duration-500 ease-out opacity-0 group-hover:opacity-100">
-                            <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                              <i className="fas fa-expand text-white text-sm" />
+                {currentImages.map((image, index) => {
+                  const currentVariantIndex = hoverVariantIndex[image.id || ''] || 0;
+                  const hasVariants = image.variants && image.variants.length > 1;
+                  const displayImageUrl = hasVariants ? image.variants![currentVariantIndex] : image.url;
+                  
+                  return (
+                    <motion.div
+                      key={`${image.id}-page-${currentPage}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg hover:shadow-xl border border-primary-200/50 dark:border-primary-700/50 transition-all duration-300 hover:-translate-y-1 cursor-pointer isolate"
+                      onClick={() => openModal(image)}
+                      onMouseEnter={() => setHoveredItem(image.id || '')}
+                      onMouseLeave={() => setHoveredItem(null)}
+                      style={{ zIndex: 10 }}
+                    >
+                      <div className="relative z-10 p-4 h-full flex flex-col">
+                        {/* Project Cover with Hover Carousel */}
+                        <div 
+                          className="w-full aspect-square overflow-hidden rounded-xl mb-3 relative"
+                          onMouseMove={(e) => {
+                            if (hasVariants) {
+                              const now = Date.now();
+                              const lastUpdate = mouseThrottle[image.id || ''] || 0;
+                              
+                              // Throttle mouse updates to prevent rapid changes (100ms delay)
+                              if (now - lastUpdate < 100) {
+                                return;
+                              }
+                              
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const x = e.clientX - rect.left;
+                              const sectionWidth = rect.width / (image.variants?.length || 1);
+                              const variantIndex = Math.floor(x / sectionWidth);
+                              const clampedIndex = Math.max(0, Math.min(variantIndex, (image.variants?.length || 1) - 1));
+                              
+                              // Only update if the index actually changed
+                              const currentIndex = hoverVariantIndex[image.id || ''] || 0;
+                              if (clampedIndex !== currentIndex) {
+                                setHoverVariantIndex(prev => ({
+                                  ...prev,
+                                  [image.id || '']: clampedIndex
+                                }));
+                                
+                                setMouseThrottle(prev => ({
+                                  ...prev,
+                                  [image.id || '']: now
+                                }));
+                              }
+                            }
+                          }}
+                        >
+                          <LazyLoadImage
+                            src={displayImageUrl || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f0f0f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E'}
+                            alt={image.title || 'No Image Available'}
+                            className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
+                            effect="opacity"
+                            placeholderSrc="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999'%3ELoading...%3C/text%3E%3C/svg%3E"
+                            wrapperClassName="w-full h-full"
+                          />
+                          
+                          {/* Hover Indicators for Multiple Variants */}
+                          {hasVariants && hoveredItem === image.id && (
+                            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 z-10">
+                              {image.variants?.map((_, variantIdx) => (
+                                <div
+                                  key={variantIdx}
+                                  className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                                    variantIdx === currentVariantIndex
+                                      ? 'bg-white shadow-lg scale-110'
+                                      : 'bg-white/50'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          )}
+                          
+                          {/* Variants Count Badge */}
+                          {hasVariants && (
+                            <div className="absolute top-2 right-2 opacity-90">
+                              <span className="px-2 py-1 text-xs font-medium bg-purple-600/90 backdrop-blur-sm text-white rounded-full flex items-center gap-1">
+                                <i className="fas fa-images text-xs" />
+                                {image.variants?.length}
+                              </span>
+                            </div>
+                          )}
+                          
+                          {/* Overlay - Made much more subtle */}
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500 ease-out flex items-center justify-center rounded-xl">
+                            <div className="transform scale-0 group-hover:scale-100 transition-all duration-500 ease-out opacity-0 group-hover:opacity-100">
+                              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                <i className="fas fa-expand text-white text-sm" />
+                              </div>
                             </div>
                           </div>
+                          
+                          {/* Category Badge */}
+                          <div className="absolute top-2 left-2 opacity-90">
+                            <span className="px-2 py-1 text-xs font-medium bg-primary-600/90 backdrop-blur-sm text-white rounded-full">
+                              {getCategoryDisplayName(image.category || 'other', language)}
+                            </span>
+                          </div>
                         </div>
-                        
-                        {/* Category Badge */}
-                        <div className="absolute top-2 left-2 opacity-90">
-                          <span className="px-2 py-1 text-xs font-medium bg-primary-600/90 backdrop-blur-sm text-white rounded-full">
-                            {getCategoryDisplayName(image.category || 'other', language)}
-                          </span>
-                        </div>
-                      </div>
 
-                      {/* Project Title */}
-                      <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 text-center line-clamp-2 flex-shrink-0">
-                        {image.title || (language === 'uk' ? 'Без назви' : 'Untitled')}
-                      </h3>
+                        {/* Project Title */}
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 text-center line-clamp-2 flex-shrink-0">
+                          {image.title || (language === 'uk' ? 'Без назви' : 'Untitled')}
+                        </h3>
 
-                      {/* Project Description */}
-                      {image.description && (
-                        <p className="text-xs text-gray-600 dark:text-gray-400 text-center line-clamp-2 flex-shrink-0 mb-3">
-                          {language === 'uk' ? image.description : (image.descriptionEn || image.description)}
-                        </p>
-                      )}
-
-                      {/* Action Buttons */}
-                      <div className="mt-auto space-y-2">
-                        {image.downloadUrl && image.downloadUrl !== '#' && image.projectUrl && image.projectUrl !== '#' && image.downloadUrl === image.projectUrl ? (
-                          <a
-                            href={image.downloadUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md group/btn"
-                          >
-                            <i className="fas fa-link text-xs group-hover/btn:scale-110 transition-transform duration-200" />
-                            <span>{language === 'uk' ? 'Переглянути' : 'View'}</span>
-                          </a>
-                        ) : (
-                          <>
-                            {image.downloadUrl && image.downloadUrl !== '#' && (
-                              <a
-                                href={image.downloadUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
-                                className="w-full px-3 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md group/btn"
-                              >
-                                <i className="fas fa-download text-xs group-hover/btn:scale-110 transition-transform duration-200" />
-                                <span>{language === 'uk' ? 'Завантажити' : 'Download'}</span>
-                              </a>
-                            )}
-                            {image.projectUrl && image.projectUrl !== '#' && (
-                              <a
-                                href={image.projectUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
-                                className="w-full px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md group/btn"
-                              >
-                                <i className="fas fa-external-link-alt text-xs group-hover/btn:scale-110 transition-transform duration-200" />
-                                <span>{language === 'uk' ? 'Переглянути Проект' : 'View Project'}</span>
-                              </a>
-                            )}
-                          </>
+                        {/* Project Description */}
+                        {image.description && (
+                          <p className="text-xs text-gray-600 dark:text-gray-400 text-center line-clamp-2 flex-shrink-0 mb-3">
+                            {language === 'uk' ? image.description : (image.descriptionEn || image.description)}
+                          </p>
                         )}
+
+                        {/* Action Buttons */}
+                        <div className="mt-auto space-y-2">
+                          {image.downloadUrl && image.downloadUrl !== '#' && image.projectUrl && image.projectUrl !== '#' && image.downloadUrl === image.projectUrl ? (
+                            <a
+                              href={image.downloadUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md group/btn"
+                            >
+                              <i className="fas fa-link text-xs group-hover/btn:scale-110 transition-transform duration-200" />
+                              <span>{language === 'uk' ? 'Переглянути' : 'View'}</span>
+                            </a>
+                          ) : (
+                            <>
+                              {image.downloadUrl && image.downloadUrl !== '#' && (
+                                <a
+                                  href={image.downloadUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="w-full px-3 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md group/btn"
+                                >
+                                  <i className="fas fa-download text-xs group-hover/btn:scale-110 transition-transform duration-200" />
+                                  <span>{language === 'uk' ? 'Завантажити' : 'Download'}</span>
+                                </a>
+                              )}
+                              {image.projectUrl && image.projectUrl !== '#' && (
+                                <a
+                                  href={image.projectUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="w-full px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md group/btn"
+                                >
+                                  <i className="fas fa-external-link-alt text-xs group-hover/btn:scale-110 transition-transform duration-200" />
+                                  <span>{language === 'uk' ? 'Переглянути Проект' : 'View Project'}</span>
+                                </a>
+                              )}
+                            </>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  );
+                })}
               </AnimatePresence>
+            </motion.div>
+          )}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <motion.div 
+              className="flex flex-col items-center gap-4 mt-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              {/* Page Info */}
+              <div className="text-center text-gray-600 dark:text-gray-400 text-sm">
+                {language === 'uk' 
+                  ? `Сторінка ${currentPage} з ${totalPages} • Показано ${currentImages.length} з ${filteredImages.length} проектів`
+                  : `Page ${currentPage} of ${totalPages} • Showing ${currentImages.length} of ${filteredImages.length} projects`
+                }
+              </div>
+
+              {/* Pagination Controls */}
+              <div className="flex items-center gap-2">
+                {/* Previous Button */}
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/50 dark:border-primary-700/50 rounded-lg text-gray-900 dark:text-white hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white/80 dark:disabled:hover:bg-gray-800/80 shadow-sm hover:shadow-md"
+                >
+                  <span className="sr-only">
+                    {language === 'uk' ? 'Попередня сторінка' : 'Previous page'}
+                  </span>
+                  <i className="fas fa-chevron-left text-sm" />
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                    // Show first page, current page and adjacent pages, last page
+                    const showPage = 
+                      page === 1 || 
+                      page === totalPages || 
+                      (page >= currentPage - 1 && page <= currentPage + 1);
+                    
+                    if (!showPage) {
+                      // Show ellipsis
+                      if (page === currentPage - 2 || page === currentPage + 2) {
+                        return (
+                          <span key={page} className="px-2 py-2 text-gray-600 dark:text-gray-400">
+                            ...
+                          </span>
+                        );
+                      }
+                      return null;
+                    }
+
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md ${
+                          currentPage === page
+                            ? 'bg-primary-600/90 backdrop-blur-sm text-white border border-primary-400/50'
+                            : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/50 dark:border-primary-700/50 text-gray-900 dark:text-white hover:bg-white dark:hover:bg-gray-700'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Next Button */}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/50 dark:border-primary-700/50 rounded-lg text-gray-900 dark:text-white hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white/80 dark:disabled:hover:bg-gray-800/80 shadow-sm hover:shadow-md"
+                >
+                  <span className="sr-only">
+                    {language === 'uk' ? 'Наступна сторінка' : 'Next page'}
+                  </span>
+                  <i className="fas fa-chevron-right text-sm" />
+                </button>
+              </div>
             </motion.div>
           )}
         </div>
@@ -525,7 +870,7 @@ export const Portfolio: React.FC = () => {
               </button>
 
               {/* Navigation Arrows */}
-              {filteredImages.length > 1 && (
+              {(filteredImages.length > 1 || selectedImageVariants.length > 1) && (
                 <>
                   <button
                     onClick={() => navigateImage('prev')}
@@ -549,7 +894,7 @@ export const Portfolio: React.FC = () => {
                 {/* Image */}
                 <div className="relative flex-1 flex items-center justify-center w-full mb-4">
                   <img
-                    src={selectedImage.url}
+                    src={selectedImageVariants.length > 0 ? selectedImageVariants[selectedVariantIndex] : selectedImage.url}
                     alt={selectedImage.title}
                     className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
                     style={{ 
@@ -557,6 +902,25 @@ export const Portfolio: React.FC = () => {
                       maxWidth: 'calc(100vw - 100px)'
                     }}
                   />
+                  
+                  {/* Variant indicators */}
+                  {selectedImageVariants.length > 1 && (
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2">
+                      {selectedImageVariants.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            setSelectedVariantIndex(idx);
+                          }}
+                          className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                            idx === selectedVariantIndex
+                              ? 'bg-white shadow-lg scale-125'
+                              : 'bg-white/50 hover:bg-white/75'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Image Info Panel */}
@@ -572,6 +936,11 @@ export const Portfolio: React.FC = () => {
                         {selectedImage.title && (
                           <h3 className="text-xl font-bold mb-2 text-white">
                             {selectedImage.title}
+                            {selectedImageVariants.length > 1 && (
+                              <span className="ml-2 text-sm text-gray-400">
+                                ({selectedVariantIndex + 1}/{selectedImageVariants.length})
+                              </span>
+                            )}
                           </h3>
                         )}
                         {selectedImage.description && (
@@ -618,6 +987,11 @@ export const Portfolio: React.FC = () => {
                       <div className="mt-4 pt-4 border-t border-white/20 text-center">
                         <span className="text-sm text-gray-400">
                           {filteredImages.findIndex(img => img.id === selectedImage.id) + 1} / {filteredImages.length}
+                          {selectedImageVariants.length > 1 && (
+                            <span className="ml-2 text-purple-400">
+                              • Variant {selectedVariantIndex + 1}/{selectedImageVariants.length}
+                            </span>
+                          )}
                         </span>
                       </div>
                     )}
@@ -631,3 +1005,5 @@ export const Portfolio: React.FC = () => {
     </div>
   );
 };
+
+export const Portfolio = React.memo(PortfolioComponent);

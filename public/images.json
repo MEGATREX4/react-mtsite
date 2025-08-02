@@ -20,30 +20,24 @@
       "category": "article",
       "tags": ["streaming", "twitch", "emotes", "7tv"],
       "downloadUrl": "#",
-      "projectUrl": "https://megatrex4.netlify.app/tag/#7tv",
+      "projectUrl": "https://megatrex4.netlify.app/7tv",
       "featured": true
     },
     {
       "id": "2",
       "url": "https://i.imgur.com/HwI2aGd.png",
-      "title": "3D Model Design",
-      "description": "Кастомна 3D модель, створена в Blender",
-      "descriptionEn": "Custom 3D artwork created in Blender",
+      "title": "Holyday Globe Collection",
+      "description": "Колекція 3D моделей святкових куль, створених в Blender",
+      "descriptionEn": "Collection of 3D holiday globe models created in Blender",
       "category": "3dmodels",
-      "tags": ["3d", "blender", "model", "design"],
+      "tags": ["3d", "blender", "model", "design", "collection"],
       "downloadUrl": "#",
-      "projectUrl": "#"
-    },
-    {
-      "id": "3",
-      "url": "https://i.imgur.com/MnmGcPm.png",
-      "title": "3D Character Model",
-      "description": "Детальне моделювання персонажа",
-      "descriptionEn": "Detailed character modeling work",
-      "category": "3dmodels",
-      "tags": ["3d", "character", "model", "blender"],
-      "downloadUrl": "#",
-      "projectUrl": "#"
+      "projectUrl": "#",
+      "variants": [
+        "https://i.imgur.com/HwI2aGd.png",
+        "https://i.imgur.com/MnmGcPm.png",
+        "https://i.imgur.com/KGy5smy.png"
+      ]
     },
     {
       "id": "4",
@@ -156,17 +150,6 @@
       "projectUrl": "https://modrinth.com/resourcepack/ua-translation"
     },
     {
-      "id": "14",
-      "url": "https://i.imgur.com/G1wtzaO.jpeg",
-      "title": "Beer Glass 3D Model",
-      "description": "Склянка пива. Зроблено за запитом з твіттера",
-      "descriptionEn": "A glass of beer. Made on request from Twitter.",
-      "category": "3dmodels",
-      "tags": ["3d", "beer", "glass", "twitter-request"],
-      "downloadUrl": "#",
-      "projectUrl": "https://twitter.com/nuzhnov_v/status/1750151883644195115"
-    },
-    {
       "id": "15",
       "url": "https://cdn.modrinth.com/data/HMEQ4bdT/ced969d5a0ca4eadee2032de3d5f3b104102bfed.png",
       "title": "Innovate Quest",
@@ -202,24 +185,17 @@
     {
       "id": "18",
       "url": "https://i.imgur.com/JDlYlpK.png",
-      "title": "Mixer 3D Model",
-      "description": "Міксер. Зроблено за запитом з твіттера",
-      "descriptionEn": "Mixer. Made by request from Twitter",
+      "title": "Mixer Collection",
+      "description": "Колекція 3D моделей міксерів. Зроблено за запитом з твіттера",
+      "descriptionEn": "Collection of Mixer 3D models. Made by request from Twitter",
       "category": "3dmodels",
-      "tags": ["3d", "mixer", "kitchen", "twitter-request"],
+      "tags": ["3d", "mixer", "kitchen", "twitter-request", "collection"],
       "downloadUrl": "#",
-      "projectUrl": "https://twitter.com/kogda_ya_zdohnu/status/1750150994229354570"
-    },
-    {
-      "id": "19",
-      "url": "https://i.imgur.com/Q367aH9.png",
-      "title": "Mixer Design Variant",
-      "description": "Міксер. Зроблено за запитом з твіттера",
-      "descriptionEn": "Mixer. Made by request from Twitter",
-      "category": "3dmodels",
-      "tags": ["3d", "mixer", "design", "twitter-request"],
-      "downloadUrl": "#",
-      "projectUrl": "https://twitter.com/kogda_ya_zdohnu/status/1750150994229354570"
+      "projectUrl": "https://twitter.com/kogda_ya_zdohnu/status/1750150994229354570",
+      "variants": [
+        "https://i.imgur.com/JDlYlpK.png",
+        "https://i.imgur.com/Q367aH9.png"
+      ]
     },
     {
       "id": "20",
@@ -231,17 +207,6 @@
       "tags": ["3d", "hammer", "ryan-gosling", "meme"],
       "downloadUrl": "#",
       "projectUrl": "https://twitter.com/GoslingUA/status/1751664629762126158"
-    },
-    {
-      "id": "21",
-      "url": "https://i.imgur.com/KGy5smy.png",
-      "title": "3D Abstract Design",
-      "description": "Абстрактний експеримент 3D моделювання",
-      "descriptionEn": "Abstract 3D modeling experiment",
-      "category": "3dmodels",
-      "tags": ["3d", "abstract", "experimental", "art"],
-      "downloadUrl": "#",
-      "projectUrl": "#"
     },
     {
       "id": "22",

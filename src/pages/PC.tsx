@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../components/AppProvider';
 
@@ -32,8 +32,49 @@ const pcSpecs = {
   ]
 };
 
-export const PC: React.FC = () => {
+const PCComponent: React.FC = () => {
   const { language } = useAppContext();
+
+  // Memoize background particles to prevent re-calculation on re-renders
+  const [backgroundParticles] = useState(() => 
+    Array.from({ length: 8 }, (_, i) => ({
+      id: `bg-particle-${i}`,
+      width: Math.random() * 60 + 20,
+      height: Math.random() * 60 + 20,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      duration: Math.random() * 8 + 6,
+    }))
+  );
+
+  // Memoized background animation to prevent re-renders
+  const backgroundAnimation = useMemo(() => (
+    <div className="absolute inset-0 opacity-20 dark:opacity-30">
+      {backgroundParticles.map((particle) => (
+        <motion.div
+          key={particle.id}
+          className="absolute bg-primary-400/40 dark:bg-primary-500/50 rounded-full"
+          style={{
+            width: particle.width,
+            height: particle.height,
+            left: `${particle.left}%`,
+            top: `${particle.top}%`,
+          }}
+          animate={{
+            y: [-10, 10, -10],
+            x: [-8, 8, -8],
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  ), [backgroundParticles]);
 
   const mainComponents = [
     { icon: 'fas fa-microchip', label: language === 'uk' ? 'ЦПУ' : 'CPU', value: pcSpecs.cpu, color: 'bg-blue-500 hover:bg-blue-600', textColor: 'text-white' },
@@ -82,31 +123,7 @@ export const PC: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-primary-50/30 to-primary-100/50 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/20 relative overflow-hidden">
       {/* Enhanced Background Animation */}
-      <div className="absolute inset-0 opacity-20 dark:opacity-30">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute bg-primary-400/40 dark:bg-primary-500/50 rounded-full"
-            style={{
-              width: Math.random() * 60 + 20,
-              height: Math.random() * 60 + 20,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [-10, 10, -10],
-              x: [-8, 8, -8],
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: Math.random() * 8 + 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
+      {backgroundAnimation}
 
       <div className="container mx-auto px-4 py-16 relative z-10">
         <div className="max-w-7xl mx-auto">
@@ -212,4 +229,5 @@ export const PC: React.FC = () => {
   );
 };
 
+export const PC = React.memo(PCComponent);
 export default PC;

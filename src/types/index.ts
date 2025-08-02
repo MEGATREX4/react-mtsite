@@ -20,6 +20,7 @@ export interface GalleryImage {
   downloadUrl?: string;
   projectUrl?: string;
   featured?: boolean;
+  variants?: string[]; // Array of image URLs instead of full objects
 }
 
 export interface SocialLink {
