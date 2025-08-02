@@ -6,12 +6,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npm run generate-sitemap",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "type-check": "tsc --noEmit",
-    "generate-sitemap": "node -e \"console.log('Sitemap will be generated during build process')\""
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "axios": "^1.11.0",

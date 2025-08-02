@@ -430,7 +430,7 @@ const PortfolioComponent: React.FC = () => {
         ? 'Повнофункціональний інтернет-магазин мерчу для українського YouTuber\'а з сучасним дизайном та зручною навігацією'
         : 'Full-featured merchandise store for Ukrainian YouTuber with modern design and user-friendly navigation',
       image: 'https://github.com/MEGATREX4/react-mtsite/blob/main/public/img/kork0za-merch.png?raw=true',
-      url: 'https://deploy-preview-1--kork0za-merch.netlify.app/',
+      url: 'https://kork0za-merch.netlify.app/',
       tags: ['E-commerce', 'React', 'TypeScript', 'Tailwind CSS', 'Responsive'],
       type: 'website',
       featured: true
