@@ -7,6 +7,71 @@ import { loadGalleryImages, getCategoryDisplayName } from '../utils/api';
 import type { GalleryImage } from '../types';
 import type { ProjectBannerProps } from '../components/ProjectBanner';
 
+// Custom CSS for subgrid support
+const subgridStyles = `
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    grid-auto-rows: max-content;
+  }
+  
+  .portfolio-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 4;
+    align-items: stretch;
+  }
+  
+  .portfolio-card-content {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 4;
+    gap: 0.75rem;
+  }
+  
+  @supports not (grid-template-rows: subgrid) {
+    .portfolio-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .portfolio-card-content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      gap: 0.75rem;
+    }
+    .portfolio-card-footer {
+      margin-top: auto;
+    }
+  }
+  
+  @media (min-width: 640px) {
+    .portfolio-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .portfolio-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .portfolio-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .portfolio-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+`;
+
 const PortfolioComponent: React.FC = () => {
   const { translations, language } = useAppContext();
   const [images, setImages] = useState<GalleryImage[]>([]);
@@ -420,6 +485,9 @@ const PortfolioComponent: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-white via-primary-50/30 to-primary-100/50 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/20 relative overflow-hidden">
       {/* Enhanced Background Animation - Memoized and isolated from hover interactions */}
       {backgroundAnimation}
+      
+      {/* Inject custom CSS for subgrid */}
+      <style dangerouslySetInnerHTML={{ __html: subgridStyles }} />
 
       <div className="container mx-auto px-4 py-16 relative z-20">
         <div className="max-w-7xl mx-auto">
@@ -577,11 +645,10 @@ const PortfolioComponent: React.FC = () => {
           ) : (
             <motion.div
               id="portfolio-grid"
-              className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+              className="portfolio-grid"
               layout
             >
-              <AnimatePresence>
-                {currentImages.map((image, index) => {
+              {currentImages.map((image) => {
                   const currentVariantIndex = hoverVariantIndex[image.id || ''] || 0;
                   const hasVariants = image.variants && image.variants.length > 1;
                   const displayImageUrl = hasVariants ? image.variants![currentVariantIndex] : image.url;
@@ -589,20 +656,18 @@ const PortfolioComponent: React.FC = () => {
                   return (
                     <motion.div
                       key={`${image.id}-page-${currentPage}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
-                      className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg hover:shadow-xl border border-primary-200/50 dark:border-primary-700/50 transition-all duration-300 hover:-translate-y-1 cursor-pointer isolate"
+                      className="portfolio-card group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg hover:shadow-2xl border border-primary-200/50 dark:border-primary-700/50 transition-all duration-300 hover:-translate-y-2 cursor-pointer isolate"
                       onClick={() => openModal(image)}
                       onMouseEnter={() => setHoveredItem(image.id || '')}
                       onMouseLeave={() => setHoveredItem(null)}
                       style={{ zIndex: 10 }}
                     >
-                      <div className="relative z-10 p-4 h-full flex flex-col">
-                        {/* Project Cover with Hover Carousel */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary-400/10 to-primary-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      
+                      <div className="portfolio-card-content relative z-10 p-4">
+                        {/* Project Cover with Hover Carousel - Row 1 */}
                         <div 
-                          className="w-full aspect-square overflow-hidden rounded-xl mb-3 relative"
+                          className="w-full aspect-square overflow-hidden rounded-xl relative"
                           onMouseMove={(e) => {
                             if (hasVariants) {
                               const now = Date.now();
@@ -687,20 +752,24 @@ const PortfolioComponent: React.FC = () => {
                           </div>
                         </div>
 
-                        {/* Project Title */}
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 text-center line-clamp-2 flex-shrink-0">
-                          {image.title || (language === 'uk' ? 'Без назви' : 'Untitled')}
-                        </h3>
+                        {/* Project Title - Row 2 */}
+                        <div className="flex items-center justify-center min-h-[2.5rem]">
+                          <h3 className="text-sm font-bold text-gray-900 dark:text-white text-center line-clamp-2">
+                            {image.title || (language === 'uk' ? 'Без назви' : 'Untitled')}
+                          </h3>
+                        </div>
 
-                        {/* Project Description */}
-                        {image.description && (
-                          <p className="text-xs text-gray-600 dark:text-gray-400 text-center line-clamp-2 flex-shrink-0 mb-3">
-                            {language === 'uk' ? image.description : (image.descriptionEn || image.description)}
-                          </p>
-                        )}
+                        {/* Project Description - Row 3 */}
+                        <div className="flex items-start justify-center min-h-[2.5rem]">
+                          {image.description && (
+                            <p className="text-xs text-gray-600 dark:text-gray-400 text-center line-clamp-2">
+                              {language === 'uk' ? image.description : (image.descriptionEn || image.description)}
+                            </p>
+                          )}
+                        </div>
 
-                        {/* Action Buttons */}
-                        <div className="mt-auto space-y-2">
+                        {/* Action Buttons - Row 4 */}
+                        <div className="portfolio-card-footer space-y-2">
                           {image.downloadUrl && image.downloadUrl !== '#' && image.projectUrl && image.projectUrl !== '#' && image.downloadUrl === image.projectUrl ? (
                             <a
                               href={image.downloadUrl}
@@ -745,7 +814,6 @@ const PortfolioComponent: React.FC = () => {
                     </motion.div>
                   );
                 })}
-              </AnimatePresence>
             </motion.div>
           )}
 
