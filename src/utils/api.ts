@@ -2,11 +2,12 @@
 export interface CompletedGame {
   name: string;
   steamId?: number;
-  rating?: number;
+  rating?: number | null;
   gameUrl?: string;
   youtubeUrl?: string;
   coverUrl?: string;
   tags?: string[];
+  isCurrentlyPlaying?: boolean;
 }
 
 export const loadCompletedGames = async (): Promise<CompletedGame[]> => {
@@ -23,6 +24,7 @@ export const loadCompletedGames = async (): Promise<CompletedGame[]> => {
           youtubeUrl: game.youtubeUrl,
           coverUrl: game.coverUrl,
           tags: game.tags || [],
+          isCurrentlyPlaying: game.isCurrentlyPlaying || false,
         }))
       : [];
   } catch (error) {

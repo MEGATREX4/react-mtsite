@@ -2,11 +2,12 @@
   {
     "name": "Undertale",
     "steamId": 84071,
-    "rating": 7.5,
+    "rating": 7,
     "gameUrl": "https://store.steampowered.com/app/391540/Undertale/",
     "youtubeUrl": "#",
     "coverUrl": "https://cdn2.steamgriddb.com/thumb/014f6631d5840dba68d43666662e1052.jpg",
-    "tags": ["indie", "rpg", "story-rich", "pixel-art", "undertale"]
+    "tags": ["indie", "rpg", "story-rich", "pixel-art", "undertale"],
+    "isCurrentlyPlaying": false
   },
   {
     "name": "Minecraft",
@@ -15,7 +16,8 @@
     "gameUrl": "https://www.minecraft.net/",
     "youtubeUrl": "#",
     "coverUrl": "https://cdn2.steamgriddb.com/thumb/1a22f0ef3aec25d1cb15d26895d13b88.jpg",
-    "tags": ["sandbox", "survival", "crafting", "multiplayer", "building"]
+    "tags": ["sandbox", "survival", "crafting", "multiplayer", "building"],
+    "isCurrentlyPlaying": false
   },
   {
     "name": "Metro 2033",
@@ -24,7 +26,8 @@
     "gameUrl": "https://store.steampowered.com/app/43110/Metro_2033/",
     "youtubeUrl": "#",
     "coverUrl": "https://cdn2.steamgriddb.com/thumb/c79b09261c899f5507ac7bdf8e993f2b.jpg",
-    "tags": ["fps", "post-apocalyptic", "story-rich", "atmospheric", "survival"]
+    "tags": ["fps", "post-apocalyptic", "story-rich", "atmospheric", "survival"],
+    "isCurrentlyPlaying": false
   },
   {
     "name": "Void Bastards",
@@ -33,7 +36,8 @@
     "gameUrl": "https://store.steampowered.com/app/857980/Void_Bastards/",
     "youtubeUrl": "#",
     "coverUrl": "https://cdn2.steamgriddb.com/thumb/a69d7b04203d27f5d2938fbf779bbc75.jpg",
-    "tags": ["strategy", "roguelike", "space", "comic-book", "tactical"]
+    "tags": ["strategy", "roguelike", "space", "comic-book", "tactical"],
+    "isCurrentlyPlaying": false
   },
   {
     "name": "Voidigo",
@@ -42,7 +46,8 @@
     "gameUrl": "https://store.steampowered.com/app/1304680/Voidigo/",
     "youtubeUrl": "#",
     "coverUrl": "https://cdn2.steamgriddb.com/thumb/d938cc6a026a8a18787cfa2ccd6eb469.jpg",
-    "tags": ["roguelike", "bullet-hell", "action", "indie"]
+    "tags": ["roguelike", "bullet-hell", "action", "indie"],
+    "isCurrentlyPlaying": false
   },
   {
     "name": "RimWorld",
@@ -51,7 +56,8 @@
     "gameUrl": "https://store.steampowered.com/app/294100/RimWorld/",
     "youtubeUrl": "#",
     "coverUrl": "https://cdn2.steamgriddb.com/thumb/18e18f3c8f5b79b3cf47179f2be87239.jpg",
-    "tags": ["colony-sim", "survival", "strategy", "management", "story-generator"]
+    "tags": ["colony-sim", "survival", "strategy", "management", "story-generator"],
+    "isCurrentlyPlaying": false
   },
   {
     "name": "osu!",
@@ -60,7 +66,8 @@
     "gameUrl": "https://osu.ppy.sh/",
     "youtubeUrl": "#",
     "coverUrl": "https://cdn2.steamgriddb.com/thumb/ba0909e302db12f30293fed31693f19b.png",
-    "tags": ["rhythm", "music", "competitive", "skill-based", "community"]
+    "tags": ["rhythm", "music", "competitive", "skill-based", "community"],
+    "isCurrentlyPlaying": false
   },
   {
     "name": "Cities: Skylines",
@@ -69,6 +76,97 @@
     "gameUrl": "https://store.steampowered.com/app/255710/Cities_Skylines/",
     "youtubeUrl": "#",
     "coverUrl": "https://cdn2.steamgriddb.com/thumb/0f1fc687aa65dc3bfee3c053472ce62a.jpg",
-    "tags": ["city-builder", "simulation", "management", "strategy", "building"]
+    "tags": ["city-builder", "simulation", "management", "strategy", "building"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Apex Legends",
+    "steamId": 1172470,
+    "rating": 8,
+    "gameUrl": "https://www.ea.com/games/apex-legends",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/0d7a3aef18b1eb97e70a5148e2a2646f.jpg",
+    "tags": ["battle-royale", "shooter", "multiplayer", "team-based"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Fortnite",
+    "steamId": 1234567,
+    "rating": 8,
+    "gameUrl": "https://www.epicgames.com/store/en-US/p/fortnite",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/4944e4ea87bc6821ae44cfbc7821ae26.jpg",
+    "tags": ["battle-royale", "shooter", "multiplayer", "team-based"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "The Long Dark",
+    "steamId": 305620,
+    "rating": 8,
+    "gameUrl": "https://store.steampowered.com/app/305620/The_Long_Dark/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/edb0cd7f8358be6e2273b25a97ee95e4.jpg",
+    "tags": ["survival", "open-world", "exploration", "atmospheric"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "BioShock",
+    "steamId": 7670,
+    "rating": 8,
+    "gameUrl": "https://store.steampowered.com/app/7670/BioShock/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/01c050dbc3b37794507091493d6adac4.jpg",
+    "tags": ["fps", "story-rich", "action", "adventure"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "BioShock 2",
+    "steamId": 8850,
+    "rating": 8,
+    "gameUrl": "https://store.steampowered.com/app/8850/BioShock_2/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/e2a6b4560a2004ec7d1e9f4f407734ef.jpg",
+    "tags": ["fps", "story-rich", "action", "adventure"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Dead Cells",
+    "steamId": 588650,
+    "rating": 8,
+    "gameUrl": "https://store.steampowered.com/app/588650/Dead_Cells/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/f6fa975361cfccc02b55c49305ff2bed.jpg",
+    "tags": ["action", "roguelike", "metroidvania", "indie"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "PEAK",
+    "steamId": 3527290,
+    "rating": 7.5,
+    "gameUrl": "https://store.steampowered.com/app/3527290/PEAK/",
+    "youtubeUrl": "https://www.youtube.com/watch?v=R7xrqcu-lfk",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/c3953e2a224c6096d56d2136f96be49e.jpg",
+    "tags": ["puzzle", "strategy", "indie"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Felvidek",
+    "steamId": 2299900,
+    "rating": null,
+    "gameUrl": "https://store.steampowered.com/app/2299900/Felvidek/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/18320a2e3ed4525a8c5d954fe7b5403e.jpg",
+    "tags": ["rpg", "adventure", "indie", "medieval", "story-rich"],
+    "isCurrentlyPlaying": true
+  },
+  {
+    "name": "The LEGO Ninjago Movie Video Game",
+    "steamId": 640590,
+    "rating": null,
+    "gameUrl": "https://store.steampowered.com/app/640590/The_LEGO_NINJAGO_Movie_Video_Game/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/d9a3df810b977ce0020e728ae1f78211.jpg",
+    "tags": ["action", "adventure", "family-friendly", "lego", "co-op"],
+    "isCurrentlyPlaying": true
   }
 ]

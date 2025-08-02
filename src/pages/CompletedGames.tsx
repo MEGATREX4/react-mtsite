@@ -14,6 +14,7 @@ const CompletedGamesComponent: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('');
   const [ratingFilter, setRatingFilter] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>(''); // New status filter
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
     if (typeof window !== 'undefined') {
       return (localStorage.getItem('completedGamesViewMode') as 'grid' | 'list') || 'grid';
@@ -63,6 +64,55 @@ const CompletedGamesComponent: React.FC = () => {
     </div>
   ), [backgroundParticles]);
 
+  // Helper function to render rating stars
+  const renderRating = (rating: number | null | undefined, isCurrentlyPlaying: boolean = false) => {
+    if (isCurrentlyPlaying || rating === null || rating === undefined) {
+      // Show crossed-out stars for currently playing/unrated games
+      return (
+        <div className="flex items-center gap-1">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="relative">
+              <i className="fas fa-star text-gray-400 dark:text-gray-500 text-sm" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-full h-px bg-red-500 transform rotate-12"></div>
+              </div>
+            </div>
+          ))}
+          <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
+            {isCurrentlyPlaying 
+              ? (language === 'uk' ? 'Зараз граю' : 'Currently playing')
+              : (language === 'uk' ? 'Не оцінено' : 'Not rated')
+            }
+          </span>
+        </div>
+      );
+    }
+
+    // Convert 10-point scale to 5-star display
+    const starRating = rating / 2; // Convert 10-point to 5-star scale
+    const fullStars = Math.floor(starRating);
+    const hasHalfStar = starRating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    return (
+      <div className="flex items-center gap-1">
+        {/* Full Stars */}
+        {Array.from({ length: fullStars }).map((_, i) => (
+          <i key={`full-${i}`} className="fas fa-star text-yellow-400 text-sm" />
+        ))}
+        {/* Half Star */}
+        {hasHalfStar && <i className="fas fa-star-half-alt text-yellow-400 text-sm" />}
+        {/* Empty Stars */}
+        {Array.from({ length: emptyStars }).map((_, i) => (
+          <i key={`empty-${i}`} className="far fa-star text-gray-300 dark:text-gray-600 text-sm" />
+        ))}
+        <span className="text-xs font-bold text-gray-700 dark:text-gray-300 ml-1">
+          {rating}/10
+        </span>
+      </div>
+    );
+  };
+
   useEffect(() => {
     const fetchGames = async () => {
       setLoading(true);
@@ -80,7 +130,7 @@ const CompletedGamesComponent: React.FC = () => {
     fetchGames();
   }, []);
 
-  // Filter games based on search term, tag, and rating
+  // Filter games based on search term, tag, rating, and status
   useEffect(() => {
     let filtered = games;
 
@@ -107,8 +157,21 @@ const CompletedGamesComponent: React.FC = () => {
       );
     }
 
+    // Status filter
+    if (statusFilter) {
+      if (statusFilter === 'completed') {
+        filtered = filtered.filter(game => !game.isCurrentlyPlaying);
+      } else if (statusFilter === 'playing') {
+        filtered = filtered.filter(game => game.isCurrentlyPlaying);
+      } else if (statusFilter === 'rated') {
+        filtered = filtered.filter(game => game.rating !== null && game.rating !== undefined);
+      } else if (statusFilter === 'unrated') {
+        filtered = filtered.filter(game => game.rating === null || game.rating === undefined);
+      }
+    }
+
     setFilteredGames(filtered);
-  }, [games, searchTerm, selectedTag, ratingFilter]);
+  }, [games, searchTerm, selectedTag, ratingFilter, statusFilter]);
 
   // Get all unique tags from games
   const allTags = Array.from(new Set(games.flatMap(game => game.tags || []))).sort();
@@ -226,6 +289,25 @@ const CompletedGamesComponent: React.FC = () => {
 
             {/* Filters Row */}
             <div className="flex flex-wrap justify-center gap-4">
+              {/* Status Filter */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <i className="fas fa-gamepad mr-1"></i>
+                  {language === 'uk' ? 'Статус:' : 'Status:'}
+                </label>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-primary-200/50 dark:border-primary-700/50 rounded-xl shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white text-sm"
+                >
+                  <option value="">{language === 'uk' ? 'Всі ігри' : 'All games'}</option>
+                  <option value="completed">{language === 'uk' ? 'Пройдені' : 'Completed'}</option>
+                  <option value="playing">{language === 'uk' ? 'Зараз граю' : 'Currently Playing'}</option>
+                  <option value="rated">{language === 'uk' ? 'Оцінені' : 'Rated'}</option>
+                  <option value="unrated">{language === 'uk' ? 'Не оцінені' : 'Not Rated'}</option>
+                </select>
+              </div>
+
               {/* Tag Filter */}
               <div className="flex items-center gap-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -264,12 +346,13 @@ const CompletedGamesComponent: React.FC = () => {
               </div>
 
               {/* Clear Filters */}
-              {(searchTerm || selectedTag || ratingFilter) && (
+              {(searchTerm || selectedTag || ratingFilter || statusFilter) && (
                 <button
                   onClick={() => {
                     setSearchTerm('');
                     setSelectedTag('');
                     setRatingFilter('');
+                    setStatusFilter('');
                   }}
                   className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-xl shadow-sm transition-all duration-200 flex items-center gap-2 text-sm"
                 >
@@ -309,6 +392,7 @@ const CompletedGamesComponent: React.FC = () => {
                   setSearchTerm('');
                   setSelectedTag('');
                   setRatingFilter('');
+                  setStatusFilter('');
                 }}
                 className="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 mx-auto"
               >
@@ -346,10 +430,20 @@ const CompletedGamesComponent: React.FC = () => {
                         </div>
                       )}
                       
-                      {/* Rating Badge */}
-                      {game.rating && (
+                      {/* Status and Rating Badge */}
+                      {game.isCurrentlyPlaying ? (
+                        <div className="absolute top-2 right-2 bg-gradient-to-r from-green-400 to-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg animate-pulse">
+                          <i className="fas fa-play mr-1"></i>
+                          {language === 'uk' ? 'Граю' : 'Playing'}
+                        </div>
+                      ) : game.rating ? (
                         <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
                           {game.rating}/10
+                        </div>
+                      ) : (
+                        <div className="absolute top-2 right-2 bg-gradient-to-r from-gray-400 to-gray-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                          <i className="fas fa-question mr-1"></i>
+                          {language === 'uk' ? 'Без оцінки' : 'Not rated'}
                         </div>
                       )}
                     </div>
@@ -379,22 +473,9 @@ const CompletedGamesComponent: React.FC = () => {
                     )}
 
                     {/* Star Rating */}
-                    {game.rating && (
-                      <div className="flex items-center justify-center mb-3 flex-shrink-0">
-                        <div className="flex items-center space-x-1">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <i
-                              key={i}
-                              className={`fas fa-star text-sm ${
-                                i < Math.round((game.rating ?? 0) / 2) 
-                                  ? 'text-yellow-400' 
-                                  : 'text-gray-300 dark:text-gray-600'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    <div className="flex items-center justify-center mb-3 flex-shrink-0">
+                      {renderRating(game.rating, game.isCurrentlyPlaying)}
+                    </div>
 
                     {/* Action Buttons */}
                     <div className="mt-auto space-y-2">
@@ -453,10 +534,18 @@ const CompletedGamesComponent: React.FC = () => {
                         </div>
                       )}
                       
-                      {/* Rating Badge */}
-                      {game.rating && (
+                      {/* Status and Rating Badge */}
+                      {game.isCurrentlyPlaying ? (
+                        <div className="absolute -top-1 -right-1 bg-gradient-to-r from-green-400 to-green-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-lg animate-pulse">
+                          <i className="fas fa-play text-xs"></i>
+                        </div>
+                      ) : game.rating ? (
                         <div className="absolute -top-1 -right-1 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-lg">
                           {game.rating}
+                        </div>
+                      ) : (
+                        <div className="absolute -top-1 -right-1 bg-gradient-to-r from-gray-400 to-gray-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-lg">
+                          <i className="fas fa-question text-xs"></i>
                         </div>
                       )}
                     </div>
@@ -468,25 +557,9 @@ const CompletedGamesComponent: React.FC = () => {
                       </h3>
                       
                       {/* Rating Stars */}
-                      {game.rating && (
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="flex items-center space-x-1">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                              <i
-                                key={i}
-                                className={`fas fa-star text-sm ${
-                                  i < Math.round((game.rating ?? 0) / 2) 
-                                    ? 'text-yellow-400' 
-                                    : 'text-gray-300 dark:text-gray-600'
-                                }`}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-yellow-500 font-semibold text-sm">
-                            {game.rating}/10
-                          </span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-3 mb-2">
+                        {renderRating(game.rating, game.isCurrentlyPlaying)}
+                      </div>
 
                       {/* Tags */}
                       {game.tags && game.tags.length > 0 && (
