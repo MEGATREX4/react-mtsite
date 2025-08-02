@@ -6,6 +6,7 @@ export interface CompletedGame {
   gameUrl?: string;
   youtubeUrl?: string;
   coverUrl?: string;
+  tags?: string[];
 }
 
 export const loadCompletedGames = async (): Promise<CompletedGame[]> => {
@@ -21,6 +22,7 @@ export const loadCompletedGames = async (): Promise<CompletedGame[]> => {
           gameUrl: game.gameUrl,
           youtubeUrl: game.youtubeUrl,
           coverUrl: game.coverUrl,
+          tags: game.tags || [],
         }))
       : [];
   } catch (error) {

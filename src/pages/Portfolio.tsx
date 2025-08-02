@@ -198,173 +198,285 @@ export const Portfolio: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-primary-50/30 to-primary-100/50 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/20 relative overflow-hidden">
-      {/* Header Section */}
-      <section className="py-24 bg-gradient-to-br from-primary-50 via-white to-primary-100 dark:from-dark-900 dark:via-dark-800 dark:to-dark-900">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-primary-700 to-gray-900 dark:from-gray-100 dark:via-primary-400 dark:to-gray-100 bg-clip-text text-transparent">
-            {translations.portfolio?.title || (language === 'uk' ? 'Портфоліо' : 'Portfolio')}
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            {translations.portfolio?.description || (language === 'uk' ? 'Колекція моїх робіт та проектів' : 'A collection of my work and projects')}
-          </p>
-        </div>
-      </section>
+      {/* Enhanced Background Animation */}
+      <div className="absolute inset-0 opacity-20 dark:opacity-30">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute bg-primary-400/40 dark:bg-primary-500/50 rounded-full"
+            style={{
+              width: Math.random() * 60 + 20,
+              height: Math.random() * 60 + 20,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [-10, 10, -10],
+              x: [-8, 8, -8],
+              scale: [1, 1.2, 1],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: Math.random() * 8 + 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
 
-      {/* Search and Sort Section */}
-      <section className="py-6 bg-white/90 dark:bg-dark-900/90 backdrop-blur-sm border-b border-gray-200/50 dark:border-dark-700/50">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+      <div className="container mx-auto px-4 py-16 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          {/* Enhanced Header */}
+          <div className="text-center mb-12">
+            <div className="mb-6 relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full blur-xl opacity-40 dark:opacity-60 scale-110 w-20 h-20 mx-auto"></div>
+              <div className="w-20 h-20 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full mx-auto shadow-2xl border-4 border-white dark:border-gray-700 relative z-10 flex items-center justify-center">
+                <i className="fas fa-briefcase text-2xl text-white" />
+              </div>
+            </div>
+            
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-400 bg-clip-text text-transparent">
+              {translations.portfolio?.title || (language === 'uk' ? 'Портфоліо' : 'Portfolio')}
+            </h1>
+            
+            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto mb-8">
+              {translations.portfolio?.description || (language === 'uk' ? 'Колекція моїх робіт та проектів, що демонструють мої навички та досвід.' : 'A collection of my work and projects that showcase my skills and experience.')}
+            </p>
+          </div>
+
+          {/* Search and Filters */}
+          <div className="mb-8 space-y-6">
             {/* Search Bar */}
-            <div className="relative flex-1 max-w-md">
-              <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
-              <input
-                type="text"
-                placeholder={language === 'uk' ? 'Пошук проектів...' : 'Search projects...'}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-dark-800 border border-gray-200 dark:border-dark-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            <div className="flex justify-center">
+              <div className="relative max-w-md w-full">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i className="fas fa-search text-gray-400 dark:text-gray-500"></i>
+                </div>
+                <input
+                  type="text"
+                  className="w-full pl-10 pr-4 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-primary-200/50 dark:border-primary-700/50 rounded-2xl shadow-md focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  placeholder={language === 'uk' ? 'Пошук проектів...' : 'Search projects...'}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    <i className="fas fa-times text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"></i>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Filters Row */}
+            <div className="flex flex-wrap justify-center gap-4">
+              {/* Category Filter */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <i className="fas fa-folder mr-1"></i>
+                  {language === 'uk' ? 'Категорія:' : 'Category:'}
+                </label>
+                <select
+                  value={activeCategory}
+                  onChange={(e) => setActiveCategory(e.target.value)}
+                  className="px-3 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-primary-200/50 dark:border-primary-700/50 rounded-xl shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white text-sm"
                 >
-                  <i className="fas fa-times" />
+                  <option value="all">{language === 'uk' ? 'Всі категорії' : 'All categories'}</option>
+                  {categories.filter(cat => cat !== 'all').map(category => (
+                    <option key={category} value={category}>
+                      {getCategoryDisplayName(category, language)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Sort Filter */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <i className="fas fa-sort mr-1"></i>
+                  {language === 'uk' ? 'Сортування:' : 'Sort by:'}
+                </label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'date' | 'title' | 'category')}
+                  className="px-3 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-primary-200/50 dark:border-primary-700/50 rounded-xl shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white text-sm"
+                >
+                  <option value="date">{language === 'uk' ? 'За датою' : 'By date'}</option>
+                  <option value="title">{language === 'uk' ? 'За назвою' : 'By title'}</option>
+                  <option value="category">{language === 'uk' ? 'За категорією' : 'By category'}</option>
+                </select>
+              </div>
+
+              {/* Clear Filters */}
+              {(searchQuery || activeCategory !== 'all' || sortBy !== 'date') && (
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setActiveCategory('all');
+                    setSortBy('date');
+                  }}
+                  className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-xl shadow-sm transition-all duration-200 flex items-center gap-2 text-sm"
+                >
+                  <i className="fas fa-times text-xs"></i>
+                  <span>{language === 'uk' ? 'Очистити' : 'Clear'}</span>
                 </button>
               )}
             </div>
 
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                {language === 'uk' ? 'Сортувати:' : 'Sort by:'}
+            {/* Results count */}
+            <div className="text-center text-sm text-gray-600 dark:text-gray-400 flex items-center justify-center gap-2">
+              <i className="fas fa-info-circle"></i>
+              <span>
+                {searchQuery ? (
+                  language === 'uk' 
+                    ? `Знайдено ${filteredImages.length} з ${images.length} проектів`
+                    : `Found ${filteredImages.length} of ${images.length} projects`
+                ) : (
+                  language === 'uk' 
+                    ? `Показано ${filteredImages.length} проектів`
+                    : `Showing ${filteredImages.length} projects`
+                )}
               </span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'date' | 'title' | 'category')}
-                className="px-4 py-2 bg-gray-50 dark:bg-dark-800 border border-gray-200 dark:border-dark-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
-              >
-                <option value="date">{language === 'uk' ? 'Дата' : 'Date'}</option>
-                <option value="title">{language === 'uk' ? 'Назва' : 'Title'}</option>
-                <option value="category">{language === 'uk' ? 'Категорія' : 'Category'}</option>
-              </select>
             </div>
           </div>
+          
+          {/* Enhanced Projects Grid */}
 
-          {/* Results Count */}
-          <div className="mt-4 text-sm text-gray-600 dark:text-gray-400 text-center">
-            {searchQuery ? (
-              <span>
+          {/* Enhanced Projects Grid */}
+          {filteredImages.length === 0 && !isLoading ? (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-full mx-auto shadow-lg border-4 border-white dark:border-gray-600 relative z-10 flex items-center justify-center mb-6">
+                <i className="fas fa-search text-2xl text-gray-400 dark:text-gray-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                {language === 'uk' ? 'Проектів не знайдено' : 'No projects found'}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
                 {language === 'uk' 
-                  ? `Знайдено ${filteredImages.length} результатів для "${searchQuery}"`
-                  : `Found ${filteredImages.length} results for "${searchQuery}"`
-                }
-              </span>
-            ) : (
-              <span>
-                {language === 'uk' 
-                  ? `Показано ${filteredImages.length} проектів`
-                  : `Showing ${filteredImages.length} projects`
-                }
-              </span>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Filter Section */}
-      <section className="py-8 bg-white/80 dark:bg-dark-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-dark-700/50">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-3">
-            {categories.map((category) => (
+                  ? 'Спробуйте змінити критерії пошуку або фільтри'
+                  : 'Try adjusting your search criteria or filters'}
+              </p>
               <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                  activeCategory === category
-                    ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/25'
-                    : 'bg-gray-100/80 dark:bg-dark-700/80 backdrop-blur-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-600 hover:shadow-md'
-                }`}
+                onClick={() => {
+                  setSearchQuery('');
+                  setActiveCategory('all');
+                  setSortBy('date');
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 mx-auto"
               >
-                {category === 'all' 
-                  ? (language === 'uk' ? 'Всі' : 'All')
-                  : getCategoryDisplayName(category, language)
-                }
+                <i className="fas fa-refresh text-sm"></i>
+                <span>{language === 'uk' ? 'Показати всі проекти' : 'Show all projects'}</span>
               </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Gallery Section */}
-      <section className="py-12 bg-gray-50 dark:bg-dark-800">
-        <div className="container mx-auto px-4">
-          {/* Gallery Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-              {language === 'uk' ? 'Галерея Робіт' : 'Work Gallery'}
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300">
-              {language === 'uk' ? 'Колекція моїх проектів та творчих робіт' : 'A collection of my projects and creative work'}
-            </p>
-          </div>
-
-          {isLoading ? (
-            <div className="flex justify-center items-center py-20">
-              <div className="animate-spin w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full"></div>
+            </div>
+          ) : isLoading ? (
+            <div className="text-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+              <div className="text-xl text-primary-600 dark:text-primary-400">
+                {language === 'uk' ? 'Завантаження...' : 'Loading...'}
+              </div>
             </div>
           ) : (
             <motion.div
-              className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 p-2"
+              className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
               layout
             >
               <AnimatePresence>
-                {filteredImages.map((image) => (
+                {filteredImages.map((image, index) => (
                   <motion.div
                     key={image.id}
-                    className="group cursor-pointer portfolio-card gallery-item no-layout-shift"
-                    layout
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg hover:shadow-xl border border-primary-200/50 dark:border-primary-700/50 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                     onClick={() => openModal(image)}
                   >
-                    <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-200 dark:bg-dark-700 shadow-lg hover:shadow-xl transition-shadow duration-300 will-change-transform">
-                      <LazyLoadImage
-                        src={image.url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f0f0f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E'}
-                        alt={image.title || 'No Image Available'}
-                        className="portfolio-image transition-transform duration-700 ease-out group-hover:scale-105"
-                        effect="opacity"
-                        placeholderSrc="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999'%3ELoading...%3C/text%3E%3C/svg%3E"
-                        wrapperClassName="w-full h-full"
-                      />
-                      
-                      {/* Overlay */}
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 ease-out flex items-center justify-center rounded-2xl">
-                        <div className="transform scale-0 group-hover:scale-100 transition-transform duration-500 ease-out opacity-0 group-hover:opacity-100">
-                          <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center">
-                            <i className="fas fa-expand text-white text-lg" />
+                    {/* Removed the flashing background overlay that was causing issues */}
+                    
+                    <div className="relative z-10 p-4 h-full flex flex-col">
+                      {/* Project Cover */}
+                      <div className="w-full aspect-square overflow-hidden rounded-xl mb-3 relative">
+                        <LazyLoadImage
+                          src={image.url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23f0f0f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E'}
+                          alt={image.title || 'No Image Available'}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          effect="opacity"
+                          placeholderSrc="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999'%3ELoading...%3C/text%3E%3C/svg%3E"
+                          wrapperClassName="w-full h-full"
+                        />
+                        
+                        {/* Overlay - Made much more subtle */}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500 ease-out flex items-center justify-center rounded-xl">
+                          <div className="transform scale-0 group-hover:scale-100 transition-all duration-500 ease-out opacity-0 group-hover:opacity-100">
+                            <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                              <i className="fas fa-expand text-white text-sm" />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      
-                      {/* Category Badge */}
-                      <div className="absolute top-3 left-3 opacity-90">
-                        <span className="px-3 py-1 text-xs font-medium bg-black/70 backdrop-blur-sm text-white rounded-full">
-                          {getCategoryDisplayName(image.category, language)}
-                        </span>
+                        
+                        {/* Category Badge */}
+                        <div className="absolute top-2 left-2 opacity-90">
+                          <span className="px-2 py-1 text-xs font-medium bg-primary-600/90 backdrop-blur-sm text-white rounded-full">
+                            {getCategoryDisplayName(image.category || 'other', language)}
+                          </span>
+                        </div>
                       </div>
 
-                      {/* Title Overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent rounded-b-2xl transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                        <h3 className="font-semibold text-white text-sm truncate">
-                          {image.title || (language === 'uk' ? 'Без назви' : 'Untitled')}
-                        </h3>
-                        {image.description && (
-                          <p className="text-white/90 text-xs mt-1 line-clamp-2">
-                            {language === 'uk' ? image.description : (image.descriptionEn || image.description)}
-                          </p>
+                      {/* Project Title */}
+                      <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 text-center line-clamp-2 flex-shrink-0">
+                        {image.title || (language === 'uk' ? 'Без назви' : 'Untitled')}
+                      </h3>
+
+                      {/* Project Description */}
+                      {image.description && (
+                        <p className="text-xs text-gray-600 dark:text-gray-400 text-center line-clamp-2 flex-shrink-0 mb-3">
+                          {language === 'uk' ? image.description : (image.descriptionEn || image.description)}
+                        </p>
+                      )}
+
+                      {/* Action Buttons */}
+                      <div className="mt-auto space-y-2">
+                        {image.downloadUrl && image.downloadUrl !== '#' && image.projectUrl && image.projectUrl !== '#' && image.downloadUrl === image.projectUrl ? (
+                          <a
+                            href={image.downloadUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-full px-3 py-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md group/btn"
+                          >
+                            <i className="fas fa-link text-xs group-hover/btn:scale-110 transition-transform duration-200" />
+                            <span>{language === 'uk' ? 'Переглянути' : 'View'}</span>
+                          </a>
+                        ) : (
+                          <>
+                            {image.downloadUrl && image.downloadUrl !== '#' && (
+                              <a
+                                href={image.downloadUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="w-full px-3 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md group/btn"
+                              >
+                                <i className="fas fa-download text-xs group-hover/btn:scale-110 transition-transform duration-200" />
+                                <span>{language === 'uk' ? 'Завантажити' : 'Download'}</span>
+                              </a>
+                            )}
+                            {image.projectUrl && image.projectUrl !== '#' && (
+                              <a
+                                href={image.projectUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="w-full px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-md group/btn"
+                              >
+                                <i className="fas fa-external-link-alt text-xs group-hover/btn:scale-110 transition-transform duration-200" />
+                                <span>{language === 'uk' ? 'Переглянути Проект' : 'View Project'}</span>
+                              </a>
+                            )}
+                          </>
                         )}
                       </div>
                     </div>
@@ -373,23 +485,13 @@ export const Portfolio: React.FC = () => {
               </AnimatePresence>
             </motion.div>
           )}
-
-          {filteredImages.length === 0 && !isLoading && (
-            <div className="text-center py-20">
-              <i className="fas fa-images text-6xl text-gray-400 mb-4" />
-              <p className="text-xl text-gray-600 dark:text-gray-400">
-                {language === 'uk' 
-                  ? 'Зображення не знайдено в цій категорії'
-                  : 'No images found in this category'
-                }
-              </p>
-            </div>
-          )}
         </div>
-      </section>
+      </div>
 
       {/* Featured Projects Section */}
-      <FeaturedProjects projects={featuredProjects} language={language} />
+      <div className="py-16 bg-gradient-to-br from-primary-50/50 via-white to-primary-100/50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
+        <FeaturedProjects projects={featuredProjects} language={language} />
+      </div>
 
       {/* Fullscreen Modal */}
       <AnimatePresence>

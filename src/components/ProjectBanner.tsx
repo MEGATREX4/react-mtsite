@@ -83,12 +83,12 @@ export const ProjectBanner: React.FC<ProjectBannerProps> = ({
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-6 py-3 bg-white/90 backdrop-blur-sm text-gray-900 font-semibold rounded-lg hover:bg-white transition-colors duration-200"
+            className="px-6 py-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md text-gray-900 dark:text-white font-semibold rounded-xl shadow-lg hover:bg-white dark:hover:bg-gray-800 hover:shadow-xl transition-all duration-200 border border-white/20 dark:border-gray-700/50"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <i className="fas fa-external-link-alt mr-2" />
-            {language === 'uk' ? 'Переглянути Проект' : 'View Project'}
+            <span>{language === 'uk' ? 'Переглянути Проект' : 'View Project'}</span>
           </motion.a>
         </div>
       </div>
@@ -128,7 +128,7 @@ export const ProjectBanner: React.FC<ProjectBannerProps> = ({
             rel="noopener noreferrer"
             className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium text-sm transition-colors duration-200"
           >
-            {language === 'uk' ? 'Відвідати Проект' : 'Visit Project'} →
+            {language === 'uk' ? 'Переглянути Проект' : 'Visit Project'} →
           </a>
           <div className="flex items-center space-x-2 text-gray-500 dark:text-gray-400">
             <i className="fas fa-eye text-xs" />

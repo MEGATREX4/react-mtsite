@@ -1,14 +1,19 @@
 
 
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { useAppContext } from '../components/AppProvider';
 import { loadCompletedGames } from '../utils/api';
 import type { CompletedGame } from '../utils/api';
 
 const CompletedGames: React.FC = () => {
   const [games, setGames] = useState<CompletedGame[]>([]);
+  const [filteredGames, setFilteredGames] = useState<CompletedGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTag, setSelectedTag] = useState<string>('');
+  const [ratingFilter, setRatingFilter] = useState<string>('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
     if (typeof window !== 'undefined') {
       return (localStorage.getItem('completedGamesViewMode') as 'grid' | 'list') || 'grid';
@@ -24,6 +29,7 @@ const CompletedGames: React.FC = () => {
       try {
         const loadedGames = await loadCompletedGames();
         setGames(loadedGames);
+        setFilteredGames(loadedGames);
       } catch (err) {
         setError('Failed to load completed games');
       } finally {
@@ -33,6 +39,39 @@ const CompletedGames: React.FC = () => {
     fetchGames();
   }, []);
 
+  // Filter games based on search term, tag, and rating
+  useEffect(() => {
+    let filtered = games;
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(game =>
+        game.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (game.tags && game.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+      );
+    }
+
+    // Tag filter
+    if (selectedTag) {
+      filtered = filtered.filter(game =>
+        game.tags && game.tags.includes(selectedTag)
+      );
+    }
+
+    // Rating filter
+    if (ratingFilter) {
+      const minRating = parseFloat(ratingFilter);
+      filtered = filtered.filter(game =>
+        game.rating && game.rating >= minRating
+      );
+    }
+
+    setFilteredGames(filtered);
+  }, [games, searchTerm, selectedTag, ratingFilter]);
+
+  // Get all unique tags from games
+  const allTags = Array.from(new Set(games.flatMap(game => game.tags || []))).sort();
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('completedGamesViewMode', viewMode);
@@ -40,164 +79,450 @@ const CompletedGames: React.FC = () => {
   }, [viewMode]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-xl">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-white via-primary-50/30 to-primary-100/50 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <div className="text-xl text-primary-600 dark:text-primary-400">Loading...</div>
+        </div>
+      </div>
+    );
   }
   if (error) {
-    return <div className="min-h-screen flex items-center justify-center text-xl text-red-500">{error}</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-white via-primary-50/30 to-primary-100/50 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/20 flex items-center justify-center">
+        <div className="text-center">
+          <i className="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+          <div className="text-xl text-red-500">{error}</div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-4xl md:text-5xl font-bold mb-10 text-primary-600 dark:text-primary-400 text-center flex items-center justify-center gap-3">
-        <i className="fas fa-gamepad" />
-        {translations?.common?.completedGames || (language === 'uk' ? 'Пройдені ігри' : 'Completed Games')}
-      </h1>
-      <div className="flex justify-end mb-6">
-        <button
-          className={`px-4 py-2 rounded-lg font-semibold shadow transition-all duration-200 mr-2 ${viewMode === 'grid' ? 'bg-primary-600 text-white' : 'bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200'}`}
-          onClick={() => setViewMode('grid')}
-        >
-          <i className="fas fa-th-large mr-2" />
-          {language === 'uk' ? 'Сітка' : 'Grid'}
-        </button>
-        <button
-          className={`px-4 py-2 rounded-lg font-semibold shadow transition-all duration-200 ${viewMode === 'list' ? 'bg-primary-600 text-white' : 'bg-gray-200 dark:bg-dark-700 text-gray-800 dark:text-gray-200'}`}
-          onClick={() => setViewMode('list')}
-        >
-          <i className="fas fa-list mr-2" />
-          {language === 'uk' ? 'Список' : 'List'}
-        </button>
+    <div className="min-h-screen bg-gradient-to-br from-white via-primary-50/30 to-primary-100/50 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/20 relative overflow-hidden">
+      {/* Enhanced Background Animation */}
+      <div className="absolute inset-0 opacity-20 dark:opacity-30">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute bg-primary-400/40 dark:bg-primary-500/50 rounded-full"
+            style={{
+              width: Math.random() * 60 + 20,
+              height: Math.random() * 60 + 20,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [-10, 10, -10],
+              x: [-8, 8, -8],
+              scale: [1, 1.2, 1],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: Math.random() * 8 + 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
       </div>
-      {viewMode === 'grid' ? (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {games.map((game) => (
-            <div
-              key={game.name}
-              className="bg-white dark:bg-dark-800 rounded-2xl shadow-lg transform transition-transform duration-200 hover:-translate-y-1 grid grid-rows-[auto,auto,auto,1fr] gap-2 items-center p-4 h-full max-h-[520px]"
-              style={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}
-            >
-              {/* Picture */}
-              <div className="row-span-1 w-full flex items-center justify-center aspect-[2/3] overflow-hidden rounded-xl">
-                {game.coverUrl ? (
-                  <img src={game.coverUrl} alt={game.name} className="w-full h-full object-cover" style={{ aspectRatio: '2/3' }} />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 dark:bg-dark-700 flex items-center justify-center" style={{ aspectRatio: '2/3' }}>
-                    <span className="text-gray-500">No Cover</span>
-                  </div>
-                )}
-              </div>
-              {/* Name */}
-              <h2 className="row-span-1 text-xl font-bold text-center mt-2 mb-1">{game.name}</h2>
-              {/* Star rating */}
-              {game.rating ? (
-                <div className="row-span-1 flex flex-col items-center mb-1">
-                  <div className="flex items-center justify-center mb-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <i
-                        key={i}
-                        className={`fas fa-star ${i < Math.round((game.rating ?? 0) / 2) ? 'text-yellow-400' : 'text-gray-300'}`}
-                      />
-                    ))}
-                  </div>
-                  {/* Numerical rating */}
-                  <span className="text-yellow-500 font-semibold">{game.rating}/10</span>
-                </div>
-              ) : (
-                <div className="row-span-1" />
-              )}
-              {/* Buttons */}
-              <div className="row-span-1 flex flex-col items-center gap-2 mt-4 mb-4 px-2 justify-center">
-                {game.gameUrl && (
-                  <a
-                    href={game.gameUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-2 w-full rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-semibold flex items-center justify-center gap-2 shadow-md transition-all duration-200"
-                  >
-                    <i className="fas fa-link" />
-                    {language === 'uk' ? 'Гра' : 'Game'}
-                  </a>
-                )}
-                {game.youtubeUrl && (
-                  <a
-                    href={game.youtubeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-2 w-full rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold flex items-center justify-center gap-2 shadow-md transition-all duration-200"
-                  >
-                    <i className="fab fa-youtube" />
-                    {translations?.social?.youtube || (language === 'uk' ? 'YouTube' : 'YouTube')}
-                  </a>
-                )}
+
+      <div className="container mx-auto px-4 py-16 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          {/* Enhanced Header */}
+          <div className="text-center mb-12">
+            <div className="mb-6 relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full blur-xl opacity-40 dark:opacity-60 scale-110 w-20 h-20 mx-auto"></div>
+              <div className="w-20 h-20 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full mx-auto shadow-2xl border-4 border-white dark:border-gray-700 relative z-10 flex items-center justify-center">
+                <i className="fas fa-gamepad text-2xl text-white" />
               </div>
             </div>
-          ))}
-        </div>
-      ) : (
-        <div className="flex flex-col gap-6">
-          {games.map((game) => (
-            <div
-              key={game.name}
-              className="flex items-center justify-between p-4 bg-white dark:bg-dark-800 rounded-2xl shadow-lg transform transition-transform duration-200 hover:-translate-y-1 max-h-[520px]"
-              style={{ minHeight: 0 }}
-            >
-              {/* Left side: image, name, stars, rating */}
-              <div className="flex items-center gap-4 min-w-0">
-                <div className="flex items-center justify-center w-24 aspect-[2/3] overflow-hidden rounded-xl">
-                  {game.coverUrl ? (
-                    <img src={game.coverUrl} alt={game.name} className="w-full h-full object-cover" style={{ aspectRatio: '2/3' }} />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 dark:bg-dark-700 flex items-center justify-center" style={{ aspectRatio: '2/3' }}>
-                      <span className="text-gray-500">No Cover</span>
-                    </div>
+            
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-400 bg-clip-text text-transparent">
+              {translations?.common?.completedGames || (language === 'uk' ? 'Пройдені ігри' : 'Completed Games')}
+            </h1>
+            
+            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto mb-8">
+              {language === 'uk' 
+                ? 'Колекція ігор, які я пройшов і оцінив. Кожна гра супроводжується моєю особистою оцінкою та посиланнями.' 
+                : 'A collection of games I\'ve completed and rated. Each game comes with my personal rating and relevant links.'}
+            </p>
+          </div>
+
+          {/* Search and Filters */}
+          <div className="mb-8 space-y-6">
+            {/* Search Bar with View Toggle */}
+            <div className="flex justify-center">
+              <div className="flex items-center gap-4 max-w-2xl w-full">
+                {/* Search Input */}
+                <div className="relative flex-1">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i className="fas fa-search text-gray-400 dark:text-gray-500"></i>
+                  </div>
+                  <input
+                    type="text"
+                    className="w-full pl-10 pr-4 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-primary-200/50 dark:border-primary-700/50 rounded-2xl shadow-md focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                    placeholder={language === 'uk' ? 'Пошук ігор...' : 'Search games...'}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    >
+                      <i className="fas fa-times text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"></i>
+                    </button>
                   )}
                 </div>
-                <div className="flex flex-col min-w-0">
-                  <h2 className="text-xl font-bold truncate">{game.name}</h2>
-                  {game.rating ? (
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className="flex items-center">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <i
-                            key={i}
-                            className={`fas fa-star ${i < Math.round((game.rating ?? 0) / 2) ? 'text-yellow-400' : 'text-gray-300'}`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-yellow-500 font-semibold">{game.rating}/10</span>
-                    </div>
-                  ) : null}
+
+                {/* View Mode Toggle */}
+                <div className="flex-shrink-0">
+                  <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl p-2 shadow-md border border-primary-200/50 dark:border-primary-700/50 flex">
+                    <button
+                      className={`px-3 py-2 rounded-xl font-medium shadow-sm transition-all duration-300 flex items-center gap-2 ${
+                        viewMode === 'grid' 
+                          ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg' 
+                          : 'bg-transparent text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20'
+                      }`}
+                      onClick={() => setViewMode('grid')}
+                      title={language === 'uk' ? 'Сітка' : 'Grid'}
+                    >
+                      <i className="fas fa-th-large text-sm" />
+                    </button>
+                    <button
+                      className={`px-3 py-2 rounded-xl font-medium shadow-sm transition-all duration-300 flex items-center gap-2 ${
+                        viewMode === 'list' 
+                          ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg' 
+                          : 'bg-transparent text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20'
+                      }`}
+                      onClick={() => setViewMode('list')}
+                      title={language === 'uk' ? 'Список' : 'List'}
+                    >
+                      <i className="fas fa-list text-sm" />
+                    </button>
+                  </div>
                 </div>
               </div>
-              {/* Right side: buttons */}
-              <div className="flex flex-col gap-2 items-end ml-4">
-                {game.gameUrl && (
-                  <a
-                    href={game.gameUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-2 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-semibold flex items-center justify-center gap-2 shadow-md transition-all duration-200"
-                  >
-                    <i className="fas fa-link" />
-                    {language === 'uk' ? 'Гра' : 'Game'}
-                  </a>
-                )}
-                {game.youtubeUrl && (
-                  <a
-                    href={game.youtubeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold flex items-center justify-center gap-2 shadow-md transition-all duration-200"
-                  >
-                    <i className="fab fa-youtube" />
-                    {translations?.social?.youtube || (language === 'uk' ? 'YouTube' : 'YouTube')}
-                  </a>
-                )}
-              </div>
             </div>
-          ))}
+
+            {/* Filters Row */}
+            <div className="flex flex-wrap justify-center gap-4">
+              {/* Tag Filter */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <i className="fas fa-tag mr-1"></i>
+                  {language === 'uk' ? 'Тег:' : 'Tag:'}
+                </label>
+                <select
+                  value={selectedTag}
+                  onChange={(e) => setSelectedTag(e.target.value)}
+                  className="px-3 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-primary-200/50 dark:border-primary-700/50 rounded-xl shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white text-sm"
+                >
+                  <option value="">{language === 'uk' ? 'Всі теги' : 'All tags'}</option>
+                  {allTags.map(tag => (
+                    <option key={tag} value={tag}>{tag}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Rating Filter */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <i className="fas fa-star mr-1"></i>
+                  {language === 'uk' ? 'Рейтинг:' : 'Rating:'}
+                </label>
+                <select
+                  value={ratingFilter}
+                  onChange={(e) => setRatingFilter(e.target.value)}
+                  className="px-3 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-primary-200/50 dark:border-primary-700/50 rounded-xl shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white text-sm"
+                >
+                  <option value="">{language === 'uk' ? 'Всі рейтинги' : 'All ratings'}</option>
+                  <option value="8">{language === 'uk' ? '8+ зірок' : '8+ stars'}</option>
+                  <option value="7">{language === 'uk' ? '7+ зірок' : '7+ stars'}</option>
+                  <option value="6">{language === 'uk' ? '6+ зірок' : '6+ stars'}</option>
+                  <option value="5">{language === 'uk' ? '5+ зірок' : '5+ stars'}</option>
+                </select>
+              </div>
+
+              {/* Clear Filters */}
+              {(searchTerm || selectedTag || ratingFilter) && (
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSelectedTag('');
+                    setRatingFilter('');
+                  }}
+                  className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-xl shadow-sm transition-all duration-200 flex items-center gap-2 text-sm"
+                >
+                  <i className="fas fa-times text-xs"></i>
+                  <span>{language === 'uk' ? 'Очистити' : 'Clear'}</span>
+                </button>
+              )}
+            </div>
+
+            {/* Results count */}
+            <div className="text-center text-sm text-gray-600 dark:text-gray-400 flex items-center justify-center gap-2">
+              <i className="fas fa-info-circle"></i>
+              <span>
+                {language === 'uk' 
+                  ? `Показано ${filteredGames.length} з ${games.length} ігор`
+                  : `Showing ${filteredGames.length} of ${games.length} games`}
+              </span>
+            </div>
+          </div>
+          
+          {/* Enhanced Games Grid */}
+          {filteredGames.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-full mx-auto shadow-lg border-4 border-white dark:border-gray-600 relative z-10 flex items-center justify-center mb-6">
+                <i className="fas fa-search text-2xl text-gray-400 dark:text-gray-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                {language === 'uk' ? 'Ігор не знайдено' : 'No games found'}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                {language === 'uk' 
+                  ? 'Спробуйте змінити критерії пошуку або фільтри'
+                  : 'Try adjusting your search criteria or filters'}
+              </p>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedTag('');
+                  setRatingFilter('');
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 mx-auto"
+              >
+                <i className="fas fa-refresh text-sm"></i>
+                <span>{language === 'uk' ? 'Показати всі ігри' : 'Show all games'}</span>
+              </button>
+            </div>
+          ) : viewMode === 'grid' ? (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {filteredGames.map((game, index) => (
+                <motion.div
+                  key={game.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg hover:shadow-2xl border border-primary-200/50 dark:border-primary-700/50 transition-all duration-300 hover:-translate-y-2 max-h-[520px]"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary-400/10 to-primary-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  
+                  <div className="relative z-10 p-4 h-full flex flex-col">
+                    {/* Game Cover */}
+                    <div className="w-full aspect-[2/3] overflow-hidden rounded-xl mb-3 relative">
+                      {game.coverUrl ? (
+                        <img 
+                          src={game.coverUrl} 
+                          alt={game.name} 
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center rounded-xl">
+                          <div className="text-center">
+                            <i className="fas fa-gamepad text-3xl text-gray-400 dark:text-gray-500 mb-2"></i>
+                            <span className="text-sm text-gray-500 dark:text-gray-400">No Cover</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Rating Badge */}
+                      {game.rating && (
+                        <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                          {game.rating}/10
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Game Title */}
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 text-center line-clamp-2 flex-shrink-0">
+                      {game.name}
+                    </h3>
+
+                    {/* Tags */}
+                    {game.tags && game.tags.length > 0 && (
+                      <div className="flex flex-wrap justify-center gap-1 mb-2 flex-shrink-0">
+                        {game.tags.slice(0, 3).map(tag => (
+                          <span
+                            key={tag}
+                            className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs rounded-full border border-primary-200 dark:border-primary-700/50"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                        {game.tags.length > 3 && (
+                          <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs rounded-full border border-gray-200 dark:border-gray-700">
+                            +{game.tags.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Star Rating */}
+                    {game.rating && (
+                      <div className="flex items-center justify-center mb-3 flex-shrink-0">
+                        <div className="flex items-center space-x-1">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <i
+                              key={i}
+                              className={`fas fa-star text-sm ${
+                                i < Math.round((game.rating ?? 0) / 2) 
+                                  ? 'text-yellow-400' 
+                                  : 'text-gray-300 dark:text-gray-600'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Action Buttons */}
+                    <div className="mt-auto space-y-2">
+                      {game.gameUrl && (
+                        <a
+                          href={game.gameUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-2 px-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm"
+                        >
+                          <i className="fas fa-external-link-alt text-xs" />
+                          <span>{language === 'uk' ? 'Гра' : 'Game'}</span>
+                        </a>
+                      )}
+                      {game.youtubeUrl && game.youtubeUrl !== '#' && (
+                        <a
+                          href={game.youtubeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-2 px-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm"
+                        >
+                          <i className="fab fa-youtube text-xs" />
+                          <span>{translations?.social?.youtube || 'YouTube'}</span>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            // Enhanced List View
+            <div className="space-y-4">
+              {filteredGames.map((game, index) => (
+                <motion.div
+                  key={game.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  className="group relative overflow-hidden rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg hover:shadow-2xl border border-primary-200/50 dark:border-primary-700/50 transition-all duration-300 hover:-translate-y-1"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-400/10 to-primary-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  
+                  <div className="relative z-10 p-6 flex items-center gap-6">
+                    {/* Game Cover */}
+                    <div className="flex-shrink-0 w-20 aspect-[2/3] overflow-hidden rounded-xl relative">
+                      {game.coverUrl ? (
+                        <img 
+                          src={game.coverUrl} 
+                          alt={game.name} 
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center rounded-xl">
+                          <i className="fas fa-gamepad text-lg text-gray-400 dark:text-gray-500"></i>
+                        </div>
+                      )}
+                      
+                      {/* Rating Badge */}
+                      {game.rating && (
+                        <div className="absolute -top-1 -right-1 bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-lg">
+                          {game.rating}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Game Info */}
+                    <div className="flex-grow min-w-0">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 truncate">
+                        {game.name}
+                      </h3>
+                      
+                      {/* Rating Stars */}
+                      {game.rating && (
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="flex items-center space-x-1">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <i
+                                key={i}
+                                className={`fas fa-star text-sm ${
+                                  i < Math.round((game.rating ?? 0) / 2) 
+                                    ? 'text-yellow-400' 
+                                    : 'text-gray-300 dark:text-gray-600'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <span className="text-yellow-500 font-semibold text-sm">
+                            {game.rating}/10
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Tags */}
+                      {game.tags && game.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {game.tags.slice(0, 4).map(tag => (
+                            <span
+                              key={tag}
+                              className="px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs rounded-full border border-primary-200 dark:border-primary-700/50"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          {game.tags.length > 4 && (
+                            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs rounded-full border border-gray-200 dark:border-gray-700">
+                              +{game.tags.length - 4}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex-shrink-0 flex flex-col gap-2">
+                      {game.gameUrl && (
+                        <a
+                          href={game.gameUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 text-sm whitespace-nowrap"
+                        >
+                          <i className="fas fa-external-link-alt text-xs" />
+                          <span>{language === 'uk' ? 'Гра' : 'Game'}</span>
+                        </a>
+                      )}
+                      {game.youtubeUrl && game.youtubeUrl !== '#' && (
+                        <a
+                          href={game.youtubeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 text-sm whitespace-nowrap"
+                        >
+                          <i className="fab fa-youtube text-xs" />
+                          <span>{translations?.social?.youtube || 'YouTube'}</span>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

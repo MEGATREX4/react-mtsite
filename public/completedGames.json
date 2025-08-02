@@ -2,10 +2,11 @@
   {
     "name": "Undertale",
     "steamId": 84071,
-    "rating": 6,
+    "rating": 7.5,
     "gameUrl": "https://store.steampowered.com/app/391540/Undertale/",
     "youtubeUrl": "#",
-    "coverUrl": "https://cdn2.steamgriddb.com/thumb/014f6631d5840dba68d43666662e1052.jpg"
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/014f6631d5840dba68d43666662e1052.jpg",
+    "tags": ["indie", "rpg", "story-rich", "pixel-art", "undertale"]
   },
   {
     "name": "Minecraft",
@@ -13,7 +14,8 @@
     "rating": 10,
     "gameUrl": "https://www.minecraft.net/",
     "youtubeUrl": "#",
-    "coverUrl": "https://cdn2.steamgriddb.com/thumb/1a22f0ef3aec25d1cb15d26895d13b88.jpg"
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/1a22f0ef3aec25d1cb15d26895d13b88.jpg",
+    "tags": ["sandbox", "survival", "crafting", "multiplayer", "building"]
   },
   {
     "name": "Metro 2033",
@@ -21,6 +23,52 @@
     "rating": 4.5,
     "gameUrl": "https://store.steampowered.com/app/43110/Metro_2033/",
     "youtubeUrl": "#",
-    "coverUrl": "https://cdn2.steamgriddb.com/thumb/c79b09261c899f5507ac7bdf8e993f2b.jpg"
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/c79b09261c899f5507ac7bdf8e993f2b.jpg",
+    "tags": ["fps", "post-apocalyptic", "story-rich", "atmospheric", "survival"]
+  },
+  {
+    "name": "Void Bastards",
+    "steamId": 857980,
+    "rating": 8,
+    "gameUrl": "https://store.steampowered.com/app/857980/Void_Bastards/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/a69d7b04203d27f5d2938fbf779bbc75.jpg",
+    "tags": ["strategy", "roguelike", "space", "comic-book", "tactical"]
+  },
+  {
+    "name": "Voidigo",
+    "steamId": 1304680,
+    "rating": 7.5,
+    "gameUrl": "https://store.steampowered.com/app/1304680/Voidigo/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/d938cc6a026a8a18787cfa2ccd6eb469.jpg",
+    "tags": ["roguelike", "bullet-hell", "action", "indie"]
+  },
+  {
+    "name": "RimWorld",
+    "steamId": 294100,
+    "rating": 9,
+    "gameUrl": "https://store.steampowered.com/app/294100/RimWorld/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/18e18f3c8f5b79b3cf47179f2be87239.jpg",
+    "tags": ["colony-sim", "survival", "strategy", "management", "story-generator"]
+  },
+  {
+    "name": "osu!",
+    "steamId": 123456,
+    "rating": 8.5,
+    "gameUrl": "https://osu.ppy.sh/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/ba0909e302db12f30293fed31693f19b.png",
+    "tags": ["rhythm", "music", "competitive", "skill-based", "community"]
+  },
+  {
+    "name": "Cities: Skylines",
+    "steamId": 255710,
+    "rating": 6.5,
+    "gameUrl": "https://store.steampowered.com/app/255710/Cities_Skylines/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/0f1fc687aa65dc3bfee3c053472ce62a.jpg",
+    "tags": ["city-builder", "simulation", "management", "strategy", "building"]
   }
 ]
