@@ -162,11 +162,11 @@
   {
     "name": "The LEGO Ninjago Movie Video Game",
     "steamId": 640590,
-    "rating": null,
+    "rating": 4.5,
     "gameUrl": "https://store.steampowered.com/app/640590/The_LEGO_NINJAGO_Movie_Video_Game/",
     "youtubeUrl": "#",
     "coverUrl": "https://cdn2.steamgriddb.com/thumb/d9a3df810b977ce0020e728ae1f78211.jpg",
     "tags": ["action", "adventure", "family-friendly", "lego", "co-op"],
-    "isCurrentlyPlaying": true
+    "isCurrentlyPlaying": false
   }
 ]
