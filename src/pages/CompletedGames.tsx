@@ -402,6 +402,7 @@ const CompletedGamesComponent: React.FC = () => {
                   className="px-3 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-primary-200/50 dark:border-primary-700/50 rounded-xl shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white text-sm"
                 >
                   <option value="">{language === 'uk' ? 'Всі рейтинги' : 'All ratings'}</option>
+                  <option value="10">{language === 'uk' ? '5 зірок (10 балів)' : '5 stars (10 points)'}</option>
                   <option value="8">{language === 'uk' ? '4+ зірки (8+ балів)' : '4+ stars (8+ points)'}</option>
                   <option value="6">{language === 'uk' ? '3+ зірки (6+ балів)' : '3+ stars (6+ points)'}</option>
                   <option value="4">{language === 'uk' ? '2+ зірки (4+ бали)' : '2+ stars (4+ points)'}</option>
