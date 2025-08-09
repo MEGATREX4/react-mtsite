@@ -160,13 +160,133 @@
     "isCurrentlyPlaying": true
   },
   {
+    "name": "Celeste",
+    "steamId": 504230,
+    "rating": null,
+    "gameUrl": "https://store.steampowered.com/app/504230/Celeste/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/8c433a09bd26b943147c4d9bacb15efc.jpg",
+    "tags": ["platformer", "indie", "adventure", "pixel-art"],
+    "isCurrentlyPlaying": true
+  },
+  {
     "name": "The LEGO Ninjago Movie Video Game",
     "steamId": 640590,
-    "rating": 4.5,
+    "rating": 5.5,
     "gameUrl": "https://store.steampowered.com/app/640590/The_LEGO_NINJAGO_Movie_Video_Game/",
     "youtubeUrl": "#",
     "coverUrl": "https://cdn2.steamgriddb.com/thumb/d9a3df810b977ce0020e728ae1f78211.jpg",
     "tags": ["action", "adventure", "family-friendly", "lego", "co-op"],
     "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Half-Life 2",
+    "steamId": 220,
+    "rating": 8,
+    "gameUrl": "https://store.steampowered.com/app/220/HalfLife_2/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/58df6629cddf7595b29c6069414583a1.jpg",
+    "tags": ["fps", "sci-fi", "action", "singleplayer", "classic"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Half-Life 2: Episode One",
+    "steamId": 380,
+    "rating": 8,
+    "gameUrl": "https://store.steampowered.com/app/380/HalfLife_2_Episode_One/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/a0f9dfdc13adce8641c37f48cb71e06e.jpg",
+    "tags": ["fps", "sci-fi", "action", "singleplayer", "classic"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Half-Life 2: Episode Two",
+    "steamId": 420,
+    "rating": 8,
+    "gameUrl": "https://store.steampowered.com/app/420/HalfLife_2_Episode_Two/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/08cf94e3112aa2c3f1ad84ca940e1264.jpg",
+    "tags": ["fps", "sci-fi", "action", "singleplayer", "classic"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Sea of Thieves",
+    "steamId": 1172620,
+    "rating": 8,
+    "gameUrl": "https://store.steampowered.com/app/1172620/Sea_of_Thieves/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/fc28dd210d52ecb0135730aa1d151b1b.jpg",
+    "tags": ["action", "adventure", "multiplayer", "pirates"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "House Flipper",
+    "steamId": 613100,
+    "rating": 7,
+    "gameUrl": "https://store.steampowered.com/app/613100/House_Flipper/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/78f34f1e466e50f39f5621bd6a698aa7.jpg",
+    "tags": ["simulation", "indie", "casual", "building"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Noita",
+    "steamId": 881100,
+    "rating": 8,
+    "gameUrl": "https://store.steampowered.com/app/881100/Noita/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/203b3e4b5a23ecdde4a11b22b90c63ea.jpg",
+    "tags": ["action", "indie", "roguelike", "physics"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Deep Rock Galactic",
+    "steamId": 548430,
+    "rating": 7,
+    "gameUrl": "https://store.steampowered.com/app/548430/Deep_Rock_Galactic/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/7ce6523f457a37f0c28044e4b050602e.jpg",
+    "tags": ["action", "co-op", "indie", "shooter", "multiplayer"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Balatro",
+    "steamId": 2379780,
+    "rating": 7,
+    "gameUrl": "https://store.steampowered.com/app/2379780/Balatro/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/84cec5b02eeefc657d6d2559eaa09e2b.jpg",
+    "tags": ["action", "indie", "roguelike", "physics"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Marauders",
+    "steamId": 1789480,
+    "rating": 5.5,
+    "gameUrl": "https://store.steampowered.com/app/1789480/Marauders/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/ff745bd586bd002062d39d1c0e827bee.png",
+    "tags": ["action", "indie", "shooter", "multiplayer"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Cyberpunk 2077",
+    "steamId": 1091500,
+    "rating": 8.5,
+    "gameUrl": "https://store.steampowered.com/app/1091500/Cyberpunk_2077/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/994a24a2b341879b9250b56482ae95d8.jpg",
+    "tags": ["action", "rpg", "triple-a", "open-world", "sci-fi"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Getting Over It with Bennett Foddy",
+    "steamId": 240720,
+    "rating": null,
+    "gameUrl": "https://store.steampowered.com/app/240720/Getting_Over_It_with_Bennett_Foddy/",
+    "youtubeUrl": "#",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/797a1e5473c21f6ded58930097451edf.jpg",
+    "tags": ["indie", "puzzle", "platformer", "difficult"],
+    "isCurrentlyPlaying": true
   }
 ]
