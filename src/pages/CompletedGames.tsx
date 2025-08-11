@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../components/AppProvider';
@@ -86,6 +84,8 @@ const CompletedGamesComponent: React.FC = () => {
     }
     return 'grid';
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(12); // Show 12 games per page
   const { translations, language } = useAppContext();
 
   // Memoize background particles to prevent re-calculation on re-renders
@@ -234,6 +234,11 @@ const CompletedGamesComponent: React.FC = () => {
     setFilteredGames(filtered);
   }, [games, searchTerm, selectedTag, ratingFilter, statusFilter]);
 
+  // Add this effect after other useEffects
+  useEffect(() => {
+    setCurrentPage(1); // Reset to first page when filters change
+  }, [searchTerm, selectedTag, ratingFilter, statusFilter]);
+
   // Get all unique tags from games
   const allTags = Array.from(new Set(games.flatMap(game => game.tags || []))).sort();
 
@@ -242,6 +247,21 @@ const CompletedGamesComponent: React.FC = () => {
       localStorage.setItem('completedGamesViewMode', viewMode);
     }
   }, [viewMode]);
+
+  const totalPages = Math.ceil(filteredGames.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentGames = filteredGames.slice(startIndex, endIndex);
+
+  // Add this after other functions
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of grid
+    const gridElement = document.getElementById('completed-games-grid');
+    if (gridElement) {
+      gridElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   if (loading) {
     return (
@@ -466,8 +486,8 @@ const CompletedGamesComponent: React.FC = () => {
               </button>
             </div>
           ) : viewMode === 'grid' ? (
-            <div className="completed-games-grid">
-              {filteredGames.map((game, index) => (
+            <div id="completed-games-grid" className="completed-games-grid">
+              {currentGames.map((game, index) => (
                 <motion.div
                   key={game.name}
                   initial={{ opacity: 0, y: 20 }}
@@ -579,7 +599,7 @@ const CompletedGamesComponent: React.FC = () => {
           ) : (
             // Enhanced List View
             <div className="space-y-4">
-              {filteredGames.map((game, index) => (
+              {currentGames.map((game, index) => (
                 <motion.div
                   key={game.name}
                   initial={{ opacity: 0, x: -20 }}
@@ -680,6 +700,88 @@ const CompletedGamesComponent: React.FC = () => {
                 </motion.div>
               ))}
             </div>
+          )}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <motion.div 
+              className="flex flex-col items-center gap-4 mt-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              {/* Page Info */}
+              <div className="text-center text-gray-600 dark:text-gray-400 text-sm">
+                {language === 'uk' 
+                  ? `Сторінка ${currentPage} з ${totalPages} • Показано ${currentGames.length} з ${filteredGames.length} ігор`
+                  : `Page ${currentPage} of ${totalPages} • Showing ${currentGames.length} of ${filteredGames.length} games`
+                }
+              </div>
+
+              {/* Pagination Controls */}
+              <div className="flex items-center gap-2">
+                {/* Previous Button */}
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/50 dark:border-primary-700/50 rounded-lg text-gray-900 dark:text-white hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white/80 dark:disabled:hover:bg-gray-800/80 shadow-sm hover:shadow-md"
+                >
+                  <span className="sr-only">
+                    {language === 'uk' ? 'Попередня сторінка' : 'Previous page'}
+                  </span>
+                  <i className="fas fa-chevron-left text-sm" />
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                    // Show first page, current page and adjacent pages, last page
+                    const showPage = 
+                      page === 1 || 
+                      page === totalPages || 
+                      (page >= currentPage - 1 && page <= currentPage + 1);
+                    
+                    if (!showPage) {
+                      // Show ellipsis
+                      if (page === currentPage - 2 || page === currentPage + 2) {
+                        return (
+                          <span key={page} className="px-2 py-2 text-gray-600 dark:text-gray-400">
+                            ...
+                          </span>
+                        );
+                      }
+                      return null;
+                    }
+
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md ${
+                          currentPage === page
+                            ? 'bg-primary-600/90 backdrop-blur-sm text-white border border-primary-400/50'
+                            : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/50 dark:border-primary-700/50 text-gray-900 dark:text-white hover:bg-white dark:hover:bg-gray-700'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Next Button */}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-primary-200/50 dark:border-primary-700/50 rounded-lg text-gray-900 dark:text-white hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white/80 dark:disabled:hover:bg-gray-800/80 shadow-sm hover:shadow-md"
+                >
+                  <span className="sr-only">
+                    {language === 'uk' ? 'Наступна сторінка' : 'Next page'}
+                  </span>
+                  <i className="fas fa-chevron-right text-sm" />
+                </button>
+              </div>
+            </motion.div>
           )}
         </div>
       </div>

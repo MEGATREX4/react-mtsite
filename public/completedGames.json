@@ -288,5 +288,65 @@
     "coverUrl": "https://cdn2.steamgriddb.com/thumb/797a1e5473c21f6ded58930097451edf.jpg",
     "tags": ["indie", "puzzle", "platformer", "difficult"],
     "isCurrentlyPlaying": true
+  },
+  {
+    "name": "Four Knocks",
+    "steamId": 123456789,
+    "rating": 8,
+    "gameUrl": "https://samiiart.itch.io/fourknocks",
+    "youtubeUrl": "#",
+    "coverUrl": "https://img.itch.zone/aW1nLzIyNjYxOTU0LnBuZw==/original/McWqb1.png",
+    "tags": ["visual-novel", "indie", "ukrainian-visual-novel-jam", "uvnj-6"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Театр Шепотів: Містичне шоу, де тиша говорить",
+    "steamId": 123456789,
+    "rating": 8,
+    "gameUrl": "https://tsukinnie.itch.io/whisper-theatre",
+    "youtubeUrl": "#",
+    "coverUrl": "https://img.itch.zone/aW1nLzIyNjY4OTkwLnBuZw==/original/2SXpF2.png",
+    "tags": ["visual-novel", "indie", "ukrainian-visual-novel-jam", "uvnj-6"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Підслуханий вересень",
+    "steamId": 123456789,
+    "rating": 7,
+    "gameUrl": "https://willardshchavel.itch.io/pidslukhanyiveresen",
+    "youtubeUrl": "#",
+    "coverUrl": "https://img.itch.zone/aW1nLzIyNjc3MjA5LnBuZw==/original/CfPMzb.png",
+    "tags": ["visual-novel", "indie", "ukrainian-visual-novel-jam", "uvnj-6"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Острів Котів",
+    "steamId": 123456789,
+    "rating": 7,
+    "gameUrl": "https://kork0za.itch.io/ostriv-kotiv",
+    "youtubeUrl": "#",
+    "coverUrl": "https://img.itch.zone/aW1nLzIyNjUxNTgwLnBuZw==/original/uCehYc.png",
+    "tags": ["visual-novel", "indie", "ukrainian-visual-novel-jam", "uvnj-6"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Шепіт що не знає спокою",
+    "steamId": 123456789,
+    "rating": 5.5,
+    "gameUrl": "https://al-l-l.itch.io/whisperbb?download",
+    "youtubeUrl": "#",
+    "coverUrl": "https://img.itch.zone/aW1hZ2UvMzc4OTY3MS8yMjU4NjM3OS5wbmc=/347x500/sZGFZ7.png",
+    "tags": ["visual-novel", "indie", "ukrainian-visual-novel-jam", "uvnj-6"],
+    "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Кавуся у Марусі",
+    "steamId": 123456789,
+    "rating": 6.8,
+    "gameUrl": "https://antomin.itch.io/kavusia-u-marusi",
+    "youtubeUrl": "#",
+    "coverUrl": "https://img.itch.zone/aW1nLzIyNjYyNTM4LmdpZg==/original/xFSvET.gif",
+    "tags": ["visual-novel", "indie", "ukrainian-visual-novel-jam", "uvnj-6"],
+    "isCurrentlyPlaying": false
   }
 ]
