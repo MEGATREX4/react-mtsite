@@ -335,6 +335,32 @@
       "tags": ["minecraft", "mod", "augmented", "reborn"],
       "downloadUrl": "https://modrinth.com/mod/augmented-reborn",
       "projectUrl": "https://modrinth.com/mod/augmented-reborn"
-    }
+    },
+    {
+      "id": "33",
+      "url": "img/cam_post.png",
+      "title": "Nikon 3100",
+      "description": "Колекція 3D моделей камери Nikon 3100 за запитом з твіттера",
+      "descriptionEn": "Collection of Nikon 3100 camera 3D models by request from Twitter",
+      "category": "3dmodels",
+      "tags": ["3d", "camera", "nikon", "twitter-request", "collection"],
+      "downloadUrl": "#",
+      "projectUrl": "https://x.com/kork0za/status/1958160413813850610",
+      "variants": [
+        "img/cam_post.png",
+        "img/cam_render5.png",
+        "img/cam_render4.png"
+      ]
+    },
+    {
+      "id": "34",
+      "url": "img/octopus.png",
+      "title": "Octopus",
+      "description": "3D модель восьминога, зроблено за запитом з твіттера",
+      "descriptionEn": "3D model of an octopus, made by request from Twitter",
+      "category": "3dmodels",
+      "tags": ["3d", "octopus", "twitter-request", "collection"],
+      "downloadUrl": "#"
+        }
   ]
 }
