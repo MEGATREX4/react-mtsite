@@ -84,13 +84,6 @@ const HomeComponent: React.FC = () => {
       label: translations.social?.twitter || 'Twitter'
     },
     { 
-      platform: 'telegram', 
-      url: 'https://t.me/modcheck', 
-      icon: 'fab fa-telegram', 
-      color: 'bg-blue-500 hover:bg-blue-600',
-      label: translations.social?.telegram || 'Telegram'
-    },
-    { 
       platform: 'instagram', 
       url: 'https://instagram.com/megatrex4', 
       icon: 'fab fa-instagram', 
