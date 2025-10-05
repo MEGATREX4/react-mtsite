@@ -13,7 +13,6 @@ export const MinecraftServerBlock: React.FC<MinecraftServerBlockProps> = ({
 }) => {
   const { language } = useAppContext();
   const [online, setOnline] = useState<string>(language === 'uk' ? 'Завантаження...' : 'Loading...');
-  const [copied, setCopied] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
 
   useEffect(() => {
@@ -40,12 +39,6 @@ export const MinecraftServerBlock: React.FC<MinecraftServerBlockProps> = ({
 
     return () => clearInterval(interval);
   }, [serverAddress, language]);
-
-  const handleCopyAddress = () => {
-    navigator.clipboard.writeText(serverAddress);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
     <motion.div
