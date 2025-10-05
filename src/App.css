@@ -44,3 +44,36 @@
 img {
   image-rendering: pixelated;
 }
+
+/* Minecraft block styles */
+.minecraft-block {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  position: relative;
+}
+
+/* Add subtle animation to the grass */
+.minecraft-block::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255,255,255,0.1) 50%, 
+    transparent 100%);
+  animation: grass-shine 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes grass-shine {
+  0%, 100% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}

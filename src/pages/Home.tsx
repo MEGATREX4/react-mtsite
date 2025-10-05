@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../components/AppProvider';
 import { SocialButtons } from '../components/SocialButtons';
+import { MinecraftServerBlock } from '../components/MinecraftServerBlock';
+
 import { fetchLatestVideo } from '../utils/api';
 import type { YouTubeVideo } from '../types';
 
@@ -245,6 +247,10 @@ const HomeComponent: React.FC = () => {
                 </div>
               </a>
             </div>
+          </div>
+
+          <div className="mb-8">
+              <MinecraftServerBlock serverAddress="m4sub.click" />
           </div>
 
           {/* Primary Social Links */}

@@ -12,7 +12,6 @@ export const Footer: React.FC = () => {
     { platform: 'twitch', url: 'https://twitch.tv/megatrex4', icon: 'fab fa-twitch', color: 'hover:text-purple-500' },
     { platform: 'discord', url: 'https://discord.gg/Y9yfRxjAHB', icon: 'fab fa-discord', color: 'hover:text-indigo-500' },
     { platform: 'twitter', url: 'https://x.com/megatrex4', icon: 'fab fa-twitter', color: 'hover:text-gray-300' },
-    { platform: 'telegram', url: 'https://t.me/modcheck', icon: 'fab fa-telegram', color: 'hover:text-blue-400' },
     { platform: 'instagram', url: 'https://instagram.com/megatrex4', icon: 'fab fa-instagram', color: 'hover:text-pink-500' },
   ];
 

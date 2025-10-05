@@ -17,6 +17,7 @@ function App() {
   );
 }
 
+
 const PCLazy = React.lazy(() => import('./pages/PC'));
 const CompletedGamesLazy = React.lazy(() => import('./pages/CompletedGames'));
 
