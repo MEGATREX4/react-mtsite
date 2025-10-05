@@ -5,6 +5,7 @@ import { Footer } from './components/Footer';
 import { Home } from './pages/Home';
 import { Portfolio } from './pages/Portfolio';
 import { NotFound } from './pages/NotFound';
+
 import './index.css';
 import React, { Suspense, useEffect } from 'react';
 import TagPage from './pages/TagPage';

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useAppContext } from '../components/AppProvider';
 import { SocialButtons } from '../components/SocialButtons';
 import { MinecraftServerBlock } from '../components/MinecraftServerBlock';
+import { PricingSection } from '../components/PricingSection';
 
 import { fetchLatestVideo } from '../utils/api';
 import type { YouTubeVideo } from '../types';

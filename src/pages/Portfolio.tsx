@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useAppContext } from '../components/AppProvider';
 import { FeaturedProjects } from '../components/ProjectBanner';
+import {PricingSection} from '../components/PricingSection';
 import { loadGalleryImages, getCategoryDisplayName } from '../utils/api';
 import type { GalleryImage } from '../types';
 import type { ProjectBannerProps } from '../components/ProjectBanner';
@@ -899,6 +900,11 @@ const PortfolioComponent: React.FC = () => {
             </motion.div>
           )}
         </div>
+      </div>
+
+      {/* Pricing Section */}
+      <div className="py-16 bg-gradient-to-br from-primary-50/50 via-white to-primary-100/50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
+        <PricingSection />
       </div>
 
       {/* Featured Projects Section */}
