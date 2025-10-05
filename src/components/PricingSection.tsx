@@ -163,28 +163,7 @@ export const PricingSection: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Auto-rotate examples for hovered cards (desktop) or all cards (mobile)
-  useEffect(() => {
-    const cardsToRotate = isMobile ? services : services.filter(s => s.id === hoveredCard);
-    
-    const intervals = cardsToRotate.map(service => {
-      if (service.examples && service.examples.length > 1) {
-        return setInterval(() => {
-          setCurrentExampleIndex(prev => ({
-            ...prev,
-            [service.id]: ((prev[service.id] || 0) + 1) % service.examples.length
-          }));
-        }, 3000);
-      }
-      return null;
-    });
-
-    return () => {
-      intervals.forEach(interval => {
-        if (interval) clearInterval(interval);
-      });
-    };
-  }, [hoveredCard, isMobile]);
+  
 
   const handleContact = () => {
     window.open('https://discord.gg/Y9yfRxjAHB', '_blank');
