@@ -169,6 +169,34 @@ export const PricingSection: React.FC = () => {
     window.open('https://discord.gg/Y9yfRxjAHB', '_blank');
   };
 
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent, service: ServiceCard) => {
+    if (!service.examples || service.examples.length <= 1) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX;
+    
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        setCurrentExampleIndex(prev => ({
+          ...prev,
+          [service.id]: ((prev[service.id] || 0) + 1) % service.examples!.length
+        }));
+      } else {
+        setCurrentExampleIndex(prev => ({
+          ...prev,
+          [service.id]: prev[service.id] > 0 
+            ? prev[service.id] - 1 
+            : service.examples!.length - 1
+        }));
+      }
+    }
+  };
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: `
@@ -459,7 +487,10 @@ export const PricingSection: React.FC = () => {
                 >
                   {/* Card Header with Example Images */}
                   <div 
-                    className={`h-28 sm:h-32 bg-gradient-to-br ${service.color} relative overflow-hidden touch-none`}>
+                    className={`h-28 sm:h-32 bg-gradient-to-br ${service.color} relative overflow-hidden touch-none`}
+                    onTouchStart={(e) => handleTouchStart(e)}
+                    onTouchEnd={(e) => handleTouchEnd(e, service)}
+                  >
                     {service.examples && service.examples.length > 0 && (
                       <div 
                         className="absolute inset-0 opacity-30 transition-opacity duration-500"
