@@ -169,31 +169,6 @@ export const PricingSection: React.FC = () => {
     window.open('https://discord.gg/Y9yfRxjAHB', '_blank');
   };
 
-  const handleTouchEnd = (e: React.TouchEvent, service: ServiceCard) => {
-    if (!service.examples || service.examples.length <= 1) return;
-    
-    const touchEndX = e.changedTouches[0].clientX;
-    const diff = touchStartX.current - touchEndX;
-    
-    if (Math.abs(diff) > 50) { // Minimum swipe distance
-      if (diff > 0) {
-        // Swipe left - next image
-        setCurrentExampleIndex(prev => ({
-          ...prev,
-          [service.id]: ((prev[service.id] || 0) + 1) % service.examples!.length
-        }));
-      } else {
-        // Swipe right - previous image
-        setCurrentExampleIndex(prev => ({
-          ...prev,
-          [service.id]: prev[service.id] > 0 
-            ? prev[service.id] - 1 
-            : service.examples!.length - 1
-        }));
-      }
-    }
-  };
-
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: `
