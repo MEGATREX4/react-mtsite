@@ -169,11 +169,6 @@ export const PricingSection: React.FC = () => {
     window.open('https://discord.gg/Y9yfRxjAHB', '_blank');
   };
 
-  // Handle touch events for swipe on examples
-  const handleTouchStart = (e: React.TouchEvent, serviceId: string) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
   const handleTouchEnd = (e: React.TouchEvent, service: ServiceCard) => {
     if (!service.examples || service.examples.length <= 1) return;
     
@@ -489,10 +484,7 @@ export const PricingSection: React.FC = () => {
                 >
                   {/* Card Header with Example Images */}
                   <div 
-                    className={`h-28 sm:h-32 bg-gradient-to-br ${service.color} relative overflow-hidden touch-none`}
-                    onTouchStart={(e) => handleTouchStart(e, service.id)}
-                    onTouchEnd={(e) => handleTouchEnd(e, service)}
-                  >
+                    className={`h-28 sm:h-32 bg-gradient-to-br ${service.color} relative overflow-hidden touch-none`}>
                     {service.examples && service.examples.length > 0 && (
                       <div 
                         className="absolute inset-0 opacity-30 transition-opacity duration-500"
