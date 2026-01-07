@@ -10,6 +10,10 @@ import type { ProjectBannerProps } from '../components/ProjectBanner';
 
 // Custom CSS for subgrid support
 const subgridStyles = `
+  img{
+    image-rendering: pixelated;
+    }
+
   .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -72,6 +76,66 @@ const subgridStyles = `
     }
   }
 `;
+
+// Category ordering for portfolio (used in sorting + UI)
+const CATEGORY_PRIORITY: Record<string, number> = {
+  // Put what you want to show first here:
+  'art': 1,
+  '3dmodels': 2,
+
+  // Then the rest:
+  'thumbnail': 3,
+  'website': 4,
+  'webapp': 5,
+  'projects': 6,
+  'mods': 7,
+  'resourcepack': 8,
+  'modpack': 9,
+  'article': 10,
+  'other': 11,
+};
+
+const sortCategories = (rawCategories: string[]): string[] => {
+  const unique = Array.from(new Set(rawCategories.filter(Boolean)));
+
+  const known: string[] = [];
+  const unknown: string[] = [];
+
+  for (const cat of unique) {
+    const key = cat.toLowerCase().trim();
+    if (CATEGORY_PRIORITY[key] != null) known.push(cat);
+    else unknown.push(cat);
+  }
+
+  known.sort(
+    (a, b) =>
+      (CATEGORY_PRIORITY[a.toLowerCase().trim()] ?? 999) -
+      (CATEGORY_PRIORITY[b.toLowerCase().trim()] ?? 999)
+  );
+
+  unknown.sort((a, b) => a.localeCompare(b));
+
+  return [...known, ...unknown];
+};
+
+const getCategoryIcon = (category: string): string => {
+  switch (category.toLowerCase().trim()) {
+    case 'art': return 'fa-pen-nib';
+    case '3dmodels': return 'fa-cube';
+    case 'thumbnail': return 'fa-image';
+    case 'website': return 'fa-globe';
+    case 'webapp': return 'fa-laptop-code';
+    case 'projects': return 'fa-project-diagram';
+    case 'mods': return 'fa-puzzle-piece';
+    case 'resourcepack': return 'fa-layer-group';
+    case 'modpack': return 'fa-boxes';
+    case 'article': return 'fa-file-alt';
+    case 'other': return 'fa-folder-open';
+    case 'all': return 'fa-th-large';
+    default: return 'fa-folder';
+  }
+};
+
 
 const PortfolioComponent: React.FC = () => {
   const { translations, language } = useAppContext();
@@ -199,12 +263,10 @@ const PortfolioComponent: React.FC = () => {
 
   // Helper function to get category priority for sorting
   const getCategoryPriority = useCallback((category: string | undefined) => {
-    const cat = (category || '').toLowerCase();
-    if (cat.includes('3d') || cat.includes('model') || cat.includes('blender') || cat.includes('render')) return 1;
-    if (cat.includes('website') || cat.includes('web') || cat.includes('site')) return 2;
-    if (cat.includes('project') || cat.includes('app') || cat.includes('application')) return 3;
-    return 4; // All others
+    const key = (category || 'other').toLowerCase().trim();
+    return CATEGORY_PRIORITY[key] ?? 999;
   }, []);
+
 
   // Helper function to sort images
   const sortImages = useCallback((imagesToSort: GalleryImage[]) => {
@@ -212,8 +274,18 @@ const PortfolioComponent: React.FC = () => {
       switch (sortBy) {
         case 'title':
           return (a.title || '').localeCompare(b.title || '');
-        case 'category':
-          return (a.category || '').localeCompare(b.category || '');
+        case 'category': {
+          const aCatPriority = getCategoryPriority(a.category);
+          const bCatPriority = getCategoryPriority(b.category);
+
+          if (aCatPriority !== bCatPriority) return aCatPriority - bCatPriority;
+
+          // Same category priority -> sort by title, then newest first
+          const titleCmp = (a.title || '').localeCompare(b.title || '');
+          if (titleCmp !== 0) return titleCmp;
+
+          return parseInt(b.id || '0') - parseInt(a.id || '0');
+        }
         case 'date':
         default:
           // First sort by category priority, then by date (newer first)
@@ -421,7 +493,18 @@ const PortfolioComponent: React.FC = () => {
 
   if (!translations) return null;
 
-  const categories = ['all', ...Array.from(new Set(images.map(img => img.category)))];
+  const categories = [
+    'all',
+    ...sortCategories(images.map(img => img.category || 'other')),
+  ];
+
+  const categoryCounts = images.reduce<Record<string, number>>((acc, img) => {
+    const key = (img.category || 'other').toLowerCase().trim();
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+
+  const totalCount = images.length;
 
   // Featured projects data
   const featuredProjects: ProjectBannerProps[] = [
@@ -536,10 +619,50 @@ const PortfolioComponent: React.FC = () => {
               </div>
             </div>
 
+            {/* Quick Category Tabs (desktop) */}
+            <div className="hidden md:flex flex-wrap justify-center gap-2">
+              {categories.map((category) => {
+                const isActive = activeCategory === category;
+                const label =
+                  category === 'all'
+                    ? (language === 'uk' ? 'Всі' : 'All')
+                    : getCategoryDisplayName(category, language);
+
+                const count =
+                  category === 'all'
+                    ? totalCount
+                    : (categoryCounts[category.toLowerCase().trim()] || 0);
+
+                return (
+                  <button
+                    key={category}
+                    onClick={() => setActiveCategory(category)}
+                    className={`px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 border ${
+                      isActive
+                        ? 'bg-primary-600 text-white border-primary-600 shadow-md'
+                        : 'bg-white/70 dark:bg-gray-800/70 text-gray-700 dark:text-gray-200 border-primary-200/50 dark:border-primary-700/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-sm'
+                    }`}
+                  >
+                    <i className={`fas ${getCategoryIcon(category)} text-xs`} />
+                    <span>{label}</span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-xs ${
+                        isActive
+                          ? 'bg-white/20 text-white'
+                          : 'bg-primary-100/70 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
             {/* Filters Row */}
             <div className="flex flex-wrap justify-center gap-4">
-              {/* Category Filter */}
-              <div className="flex items-center gap-2">
+              {/* Category Filter (mobile) */}
+              <div className="flex items-center gap-2 md:hidden">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   <i className="fas fa-folder mr-1"></i>
                   {language === 'uk' ? 'Категорія:' : 'Category:'}
@@ -899,6 +1022,155 @@ const PortfolioComponent: React.FC = () => {
               </div>
             </motion.div>
           )}
+        </div>
+      </div>
+
+
+      {/* Services / About Section */}
+      <div className="py-16 bg-gradient-to-br from-white via-primary-50/30 to-primary-100/40 dark:from-gray-900 dark:via-gray-800 dark:to-primary-900/20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              className="relative overflow-hidden rounded-3xl bg-white/80 dark:bg-gray-800/70 backdrop-blur-md border border-primary-200/40 dark:border-primary-700/40 shadow-xl"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true, margin: "-80px" }}
+            >
+              {/* subtle glow */}
+              <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary-400/20 blur-3xl rounded-full" />
+              <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-primary-600/10 blur-3xl rounded-full" />
+
+              <div className="relative p-6 sm:p-8 md:p-10">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg">
+                    <i className="fas fa-handshake text-white text-lg" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                      {language === 'uk' ? 'Невеликі замовлення та проєкти' : 'Small orders and projects'}
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
+                      {language === 'uk'
+                        ? 'Привіт! Я беру невеликі (і не тільки) замовлення на розробку та графіку.'
+                        : 'Hi! I take small (and not only) orders for development and graphics.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* What I do */}
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                      <i className="fas fa-tools text-primary-600 dark:text-primary-400" />
+                      <span>{language === 'uk' ? 'Що я роблю' : 'What I do'}</span>
+                    </h3>
+
+                    <ul className="space-y-3 text-gray-700 dark:text-gray-200 leading-relaxed">
+                      <li className="flex gap-3">
+                        <i className="fas fa-cube mt-1 text-primary-600/90 dark:text-primary-400/90" />
+                        <span>
+                          {language === 'uk'
+                            ? 'Minecraft Java: моди та плагіни під Spigot/Paper/Fabric (можемо робити окремо server-side або client-side, або одразу server+client)'
+                            : 'Minecraft Java: mods and plugins for Spigot/Paper/Fabric (server-side, client-side, or both).'}
+                        </span>
+                      </li>
+
+                      <li className="flex gap-3">
+                        <i className="fas fa-server mt-1 text-primary-600/90 dark:text-primary-400/90" />
+                        <span>
+                          {language === 'uk'
+                            ? 'Можемо домовитись про проєкт “під ключ” (сервер + налаштування + хостинг), але це завжди індивідуально — спершу обговоримо задачі, бюджет і терміни'
+                            : 'We can also do a turnkey project (server + setup + hosting), but it is always individual: first we discuss tasks, budget, and timeline.'}
+                        </span>
+                      </li>
+
+                      <li className="flex gap-3">
+                        <i className="fas fa-shapes mt-1 text-primary-600/90 dark:text-primary-400/90" />
+                        <span>
+                          {language === 'uk'
+                            ? '3D low-poly моделі під стиль Minecraft'
+                            : '3D low-poly models in Minecraft style'}
+                        </span>
+                      </li>
+
+                      <li className="flex gap-3">
+                        <i className="fas fa-paint-brush mt-1 text-primary-600/90 dark:text-primary-400/90" />
+                        <span>
+                          {language === 'uk'
+                            ? '2D спрайти 16×16'
+                            : '2D sprites (16×16)'}
+                        </span>
+                      </li>
+
+                      <li className="flex gap-3">
+                        <i className="fas fa-code mt-1 text-primary-600/90 dark:text-primary-400/90" />
+                        <span>
+                          {language === 'uk'
+                            ? 'Front-end: HTML / CSS / JS, React'
+                            : 'Front-end: HTML / CSS / JS, React'}
+                        </span>
+                      </li>
+
+                      <li className="flex gap-3">
+                        <i className="fas fa-film mt-1 text-primary-600/90 dark:text-primary-400/90" />
+                        <span>
+                          {language === 'uk'
+                            ? 'Монтаж відео та обкладинки'
+                            : 'Video editing and thumbnails'}
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Experience */}
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                      <i className="fas fa-award text-primary-600 dark:text-primary-400" />
+                      <span>{language === 'uk' ? 'Досвід і додатково' : 'Experience & extra'}</span>
+                    </h3>
+
+                    <ul className="space-y-3 text-gray-700 dark:text-gray-200 leading-relaxed">
+                      <li className="flex gap-3">
+                        <i className="fas fa-language mt-1 text-primary-600/90 dark:text-primary-400/90" />
+                        <span>
+                          {language === 'uk'
+                            ? 'Англійська — трохи вище середнього'
+                            : 'English: slightly above intermediate'}
+                        </span>
+                      </li>
+
+                      <li className="flex gap-3">
+                        <i className="fas fa-scissors mt-1 text-primary-600/90 dark:text-primary-400/90" />
+                        <span>
+                          {language === 'uk'
+                            ? 'Раніше робив нарізки стрімів: монтаж + оформлення каналу (обкладинки/візуал)'
+                            : 'Previously made stream highlights: editing + channel visuals (covers/branding).'}
+                        </span>
+                      </li>
+
+                      <li className="flex gap-3">
+                        <i className="fas fa-network-wired mt-1 text-primary-600/90 dark:text-primary-400/90" />
+                        <span>
+                          {language === 'uk'
+                            ? 'Маю проєкт серверів зі стабільним, хоч і невеликим онлайном; 5 років тримаю майнкрафт-сервери та роблю унікальний контент (приклад — мій проєкт M4SUB). За потреби можу підняти й налаштувати сервер під вас (хостинг, базові налаштування, контент — усе обговорюємо під задачу). Піратські сервери не роблю, бо з ними більше мороки, ніж здається.'
+                            : 'I run a server project with stable (though small) online activity; I have been running Minecraft servers and making unique content for 5 years (example: my M4SUB project). If needed, I can deploy and configure a server for you (hosting, base setup, content — all discussed per task). I do not do pirated servers because they bring more hassle than it seems.'}
+                        </span>
+                      </li>
+                    </ul>
+
+                    <div className="mt-6 p-4 rounded-2xl bg-primary-50/70 dark:bg-gray-900/40 border border-primary-200/40 dark:border-primary-700/40">
+                      <p className="text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
+                        {language === 'uk'
+                          ? 'Якщо хочеш — напиши коротко, що треба зробити, і я скажу приблизну оцінку по часу та вартості.'
+                          : 'If you want, write a short brief of what you need and I will give an approximate time and price estimate.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
 

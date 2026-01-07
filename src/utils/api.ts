@@ -123,6 +123,7 @@ export const loadGalleryImages = async (): Promise<GalleryImage[]> => {
 export const getCategoryDisplayName = (category: string, language: string): string => {
   const categoryNames: Record<string, Record<string, string>> = {
     uk: {
+      'art': '2D Арт/Спрайти',
       '3dmodels': '3D Моделі',
       'mods': 'Моди',
       'projects': 'Проєкти',
@@ -132,8 +133,10 @@ export const getCategoryDisplayName = (category: string, language: string): stri
       'thumbnail': 'Обкладинки',
       'website': 'Вебсайти',
       'webapp': 'Веб додатки',
+      'other': 'Інші'
     },
     en: {
+      'art': '2D Art/Sprites',
       '3dmodels': '3D Models',
       'mods': 'Mods',
       'projects': 'Projects',
@@ -143,6 +146,7 @@ export const getCategoryDisplayName = (category: string, language: string): stri
       'thumbnail': 'Thumbnails',
       'website': 'Websites',
       'webapp': 'Web Apps',
+      'other': 'Other',
     }
   };
 

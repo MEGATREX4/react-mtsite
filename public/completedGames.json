@@ -348,5 +348,15 @@
     "coverUrl": "https://img.itch.zone/aW1nLzIyNjYyNTM4LmdpZg==/original/xFSvET.gif",
     "tags": ["visual-novel", "indie", "ukrainian-visual-novel-jam", "uvnj-6"],
     "isCurrentlyPlaying": false
+  },
+  {
+    "name": "Detlarune Chapter 1-4",
+    "steamId": 1671210,
+    "rating": 8,
+    "gameUrl": "https://store.steampowered.com/app/1671210/DELTARUNE/",
+    "youtubeUrl": "",
+    "coverUrl": "https://cdn2.steamgriddb.com/thumb/97c216cb25ce4c47de15d030c76fed39.jpg",
+    "tags": ["indie", "rpg", "adventure", "pixel-art", "story-rich"],
+    "isCurrentlyPlaying": false
   }
 ]

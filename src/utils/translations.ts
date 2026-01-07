@@ -43,6 +43,7 @@ export const loadTranslations = async (language: Language): Promise<Translations
           description: 'Мої роботи та проєкти',
           categories: {
             threeModels: '3D Моделі',
+            twoart: '2D Арт/Спрайти',
             mods: 'Моди',
             projects: 'Проєкти',
             resourcepack: 'Ресурс паки',
@@ -112,6 +113,7 @@ export const loadTranslations = async (language: Language): Promise<Translations
           description: 'My works and projects',
           categories: {
             threeModels: '3D Models',
+            twoart: '2D Art/Sprites',
             mods: 'Mods',
             projects: 'Projects',
             resourcepack: 'Resource Packs',
